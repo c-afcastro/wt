@@ -188,6 +188,8 @@ html.ios-app .top{padding-top:46px}
 .fld{display:grid;gap:6px;margin:0 0 14px;border:0;padding:0;min-width:0}
 .fld>span,.fld>legend{padding:0;font-size:12.5px;font-weight:500;color:var(--muted)}
 .fld>legend{margin-bottom:8px}
+.fld.grp{min-width:0;max-width:100%}
+.fld>.lgd{margin-bottom:2px}
 input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);color:var(--ink);padding:10px 12px;font-size:16px;-webkit-appearance:none;appearance:none}
 input::placeholder,textarea::placeholder{color:var(--ink-3)}
 input[type=date]{display:block;text-align:left}
@@ -760,6 +762,23 @@ a.btn{text-decoration:none}
 .tour-chips .ic{width:17px;height:17px}
 .tour-chips .ic-f{display:none}
 @media (prefers-reduced-motion: reduce){.tour-hole,.tour-card{transition:none!important;animation:none!important}.tour-hole::after{display:none}}
+
+/* ── v0.1: nada rola para o lado — categorias, ícones, cores e trilha do manual quebram linha ── */
+fieldset{min-width:0;max-width:100%}
+.sheet{overflow-x:hidden}
+.cat-grid{grid-auto-flow:row;grid-template-rows:none;grid-auto-columns:auto;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:12px 4px;overflow:visible;margin:0;padding:6px 0 4px;touch-action:auto}
+.cat small{max-width:100%;font-size:10.5px;overflow-wrap:break-word;hyphens:auto}
+@media (max-width:359px){input[type=date]{padding-inline:8px;font-size:15px}}
+.pick-row{flex-wrap:wrap;overflow:visible;touch-action:auto}
+.gv-rail{flex-wrap:wrap;overflow:visible}
+.tblwrap{overflow-x:visible}
+.tbl{width:100%;table-layout:fixed}
+.tbl th,.tbl td{overflow-wrap:anywhere}
+input,select,textarea{min-width:0;max-width:100%}
+input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
+.hero>*{min-width:0}
+.me-card{min-width:0}
+.me-txt{flex:1}
 </style>
 </head>
 <body>
@@ -803,7 +822,7 @@ a.btn{text-decoration:none}
 const CFG = window.FIREBASE_CONFIG || {};
 const HAS_FB = !!(CFG.apiKey && CFG.projectId);
 const FB_VERSION = '10.12.2';
-const APP_VERSION = '0.1';
+const APP_VERSION = '0.2';
 /* Logo: anel em três partes (três amigos) + ponto central (a conta). */
 const LOGO_SEG = ['M90.79 18.10A40 40 0 0 1 123.95 75.53', 'M121.16 80.37A40 40 0 0 1 54.84 80.37', 'M52.05 75.53A40 40 0 0 1 85.21 18.10'];
 const logoMini = spin => '<svg class="logo-mini' + (spin ? ' spin' : '') + '" viewBox="36 6 104 104" aria-hidden="true"><g>' + LOGO_SEG.map((d, i) => '<path class="q' + (i + 1) + '" d="' + d + '"/>').join('') + '</g><circle cx="88" cy="58" r="10"/></svg>';
@@ -2219,7 +2238,7 @@ const MAN_SECOES = [
   { id: 'versao', ic: 'info', t: 'Versão', s: 'wirteilen v' + APP_VERSION + '.',
     faz: 'A versão aparece na tela de entrada e no fim de Ajustes.',
     uso: 'Ao relatar um problema, diga a versão.',
-    det: 'A versão 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
+    det: 'A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
   { id: 'divisao', ic: 'person2', t: 'Modos de divisão', s: 'Igual, Valores e Partes.',
     faz: 'Define quanto da despesa cabe a cada pessoa.',
     uso: '<b>Igual</b> divide entre os marcados. <b>Valores</b> recebe o valor exato de cada um. <b>Partes</b> divide por peso (2 partes pagam o dobro de 1).',
@@ -2531,9 +2550,9 @@ function openExpense(id) {
     EXP.pesos[u] = e && e.pesos ? (e.pesos[u] || 0) : (e ? (e.divisao[u] > 0 ? 1 : 0) : 1);
   });
   const pag = e ? e.pagador : me();
-  const repF = e ? '' : '<fieldset class="fld"><legend>Repetir</legend><div class="seg">' +
+  const repF = e ? '' : '<div class="fld grp" role="group" aria-label="Repetir"><span class="lgd">Repetir</span><div class="seg">' +
     [['nao', 'Só uma vez'], ['semanal', 'Toda semana'], ['mensal', 'Todo mês']].map(([v, l]) => '<label><input type="radio" name="rep" value="' + v + '"' + (v === 'nao' ? ' checked' : '') + ' data-ch="exp-rep"><span>' + l + '</span></label>').join('') + '</div>' +
-    '<div class="rep" id="ex-rep" hidden><div class="rep-row"><span>Quantas vezes, contando esta</span><span class="stepper"><button type="button" data-a="rep-n" data-d="-1" aria-label="Menos uma vez">−</button><b id="ex-rep-n">3</b><button type="button" data-a="rep-n" data-d="1" aria-label="Mais uma vez">+</button></span></div><p class="hint" id="ex-rep-prev" style="margin:8px 0 0"></p></div></fieldset>';
+    '<div class="rep" id="ex-rep" hidden><div class="rep-row"><span>Quantas vezes, contando esta</span><span class="stepper"><button type="button" data-a="rep-n" data-d="-1" aria-label="Menos uma vez">−</button><b id="ex-rep-n">3</b><button type="button" data-a="rep-n" data-d="1" aria-label="Mais uma vez">+</button></span></div><p class="hint" id="ex-rep-prev" style="margin:8px 0 0"></p></div></div>';
   const avisarF = e ? '' : '<label class="switch-row"><span><b>Avisar o grupo</b><small>Os amigos veem o aviso ao abrir o wirteilen, e você pode mandar a mensagem no WhatsApp.</small></span><input type="checkbox" class="switch" id="ex-avisar" aria-label="Avisar o grupo"></label>';
   openSheet(sheetHead(e ? 'Editar despesa' : 'Nova despesa') +
     '<form data-f="expense" id="exp-form" novalidate>' +
@@ -2542,10 +2561,10 @@ function openExpense(id) {
     '<label class="fld"><span>Data</span><input id="ex-data" type="date" name="data" required value="' + (e ? e.data : todayISO()) + '"></label></div>' +
     '<div class="qops" id="ex-qops"' + (e ? '' : ' hidden') + '><button type="button" class="qop" data-a="qop" data-op="half" aria-label="Dividir o valor por 2">÷ 2</button><button type="button" class="qop" data-a="qop" data-op="double" aria-label="Multiplicar o valor por 2">× 2</button><span class="hint" style="margin:0">atalhos sobre o valor</span></div>' +
     (e && e.serie ? '<p class="hint" style="margin:-6px 0 14px">' + ico('repeat') + ' Lançamento ' + e.serie.k + ' de ' + e.serie.n + ' (' + (e.serie.freq === 'semanal' ? 'toda semana' : 'todo mês') + '). A alteração vale só para este.</p>' : '') +
-    '<fieldset class="fld"><legend>Categoria</legend><div id="ex-cats">' + catGrid(EXP.cat) + '</div><div id="nc-box-ex" hidden></div></fieldset>' +
-    '<fieldset class="fld"><legend>Quem pagou</legend><div class="chips">' + ids.map(u => '<label class="chip"><input type="radio" name="pagador" value="' + esc(u) + '"' + (u === pag ? ' checked' : '') + '><span>' + markOf(u, 20) + esc(who(u)) + '</span></label>').join('') + '</div></fieldset>' +
-    '<fieldset class="fld"><legend>Como dividir</legend><div class="seg">' + MODOS.map(m => '<label><input type="radio" name="modo" value="' + m.id + '"' + (m.id === EXP.modo ? ' checked' : '') + ' data-ch="exp-modo"><span>' + m.nome + '</span></label>').join('') + '</div>' +
-    '<div id="ex-split" class="split"></div><p id="ex-status" class="split-status" aria-live="polite"></p></fieldset>' +
+    '<div class="fld grp" role="group" aria-label="Categoria"><span class="lgd">Categoria</span><div id="ex-cats">' + catGrid(EXP.cat) + '</div><div id="nc-box-ex" hidden></div></div>' +
+    '<div class="fld grp" role="group" aria-label="Quem pagou"><span class="lgd">Quem pagou</span><div class="chips">' + ids.map(u => '<label class="chip"><input type="radio" name="pagador" value="' + esc(u) + '"' + (u === pag ? ' checked' : '') + '><span>' + markOf(u, 20) + esc(who(u)) + '</span></label>').join('') + '</div></div>' +
+    '<div class="fld grp" role="group" aria-label="Como dividir"><span class="lgd">Como dividir</span><div class="seg">' + MODOS.map(m => '<label><input type="radio" name="modo" value="' + m.id + '"' + (m.id === EXP.modo ? ' checked' : '') + ' data-ch="exp-modo"><span>' + m.nome + '</span></label>').join('') + '</div>' +
+    '<div id="ex-split" class="split"></div><p id="ex-status" class="split-status" aria-live="polite"></p></div>' +
     repF + avisarF +
     '<div class="sheet-actions"><button class="btn">' + (e ? 'Salvar alterações' : 'Lançar despesa') + '</button>' +
     (e ? '<button type="button" class="btn danger" data-a="del-exp" data-id="' + esc(e.id) + '">' + ico('trash') + 'Excluir despesa</button><p class="hint">Lançada por ' + esc(who(e.criadoPor || e.pagador)) + (e.atualizadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '</p>' : '') +
@@ -3211,7 +3230,7 @@ async function boot() {
   }
   if (store === FB) FB.onAuth(u => { if (store === FB) onUser(u); });
   Demo.onAuth(u => { if (store === Demo) onUser(u); });
-  try { if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) {}
+  try { if ('serviceWorker' in navigator && location.protocol === 'https:') { const had = !!navigator.serviceWorker.controller; let done = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !done) { done = true; location.reload(); } }); navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => r.update()).catch(() => {}); } } catch (e) {}
 }
 window.__wirteilen = { pixPayload, crc16, computeSplit, settle, parseMoney };
 boot();
