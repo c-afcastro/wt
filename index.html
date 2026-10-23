@@ -927,6 +927,29 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 :root[data-theme="dark"]{--verif:#4CC38A}
 .hero .selo .b,.gm-hero .selo .b,.cele .selo .b{fill:#fff;stroke:#fff}
 .hero .selo .v,.gm-hero .selo .v{stroke:var(--c,var(--k1))}
+
+/* ── v0.9: comprovantes ── */
+.cmp{display:flex;align-items:center;gap:12px;padding:10px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
+.cmp-th{flex:none;width:64px;height:64px;border-radius:10px;overflow:hidden;background:var(--fill);display:grid;place-items:center;border:0;padding:0;color:var(--muted)}
+.cmp-th img{width:100%;height:100%;object-fit:cover;display:block}
+.cmp-th .ic{width:26px;height:26px}
+.cmp-tx{flex:1;min-width:0;display:grid;gap:2px;font-size:14px}
+.cmp-tx small{color:var(--muted);font-size:12.5px}
+.cmp-ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.cmp-ac .btn{width:auto;min-height:32px;padding:0 12px;font-size:13px}
+.cmp-wait{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
+.rcpt{border-radius:16px;overflow:auto;background:#111;max-height:72vh;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch}
+.rcpt img{display:block;width:100%;height:auto;cursor:zoom-in}
+.rcpt.zoom img{width:220%;max-width:none;cursor:zoom-out}
+.rcpt .cmp-wait{padding:60px 0;justify-content:center;width:100%;color:#ccc}
+.rc-ov{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.95);display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));animation:fade .18s ease}
+.rc-top{display:flex;align-items:center;justify-content:space-between;color:#fff;padding:4px 4px 10px}
+.rc-top b{font-size:17px}
+.rc-x{border:0;background:rgba(255,255,255,.16);color:#fff;font-weight:600;font-size:15px;border-radius:999px;padding:8px 16px}
+.rc-ov .rcpt{flex:1;max-height:none;background:transparent;display:block}
+.rc-hint{margin:8px 0 0;text-align:center;color:rgba(255,255,255,.7);font-size:12.5px}
+.row-s .clip{display:inline-flex;vertical-align:-2px;margin-right:3px;color:var(--ink-3)}
+.row-s .clip .ic{width:12px;height:12px}
 </style>
 </head>
 <body>
@@ -970,7 +993,7 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 const CFG = window.FIREBASE_CONFIG || {};
 const HAS_FB = !!(CFG.apiKey && CFG.projectId);
 const FB_VERSION = '10.12.2';
-const APP_VERSION = '0.8';
+const APP_VERSION = '0.9';
 /* Logo: anel em três partes (três amigos) + ponto central (a conta). */
 const LOGO_SEG = ['M90.79 18.10A40 40 0 0 1 123.95 75.53', 'M121.16 80.37A40 40 0 0 1 54.84 80.37', 'M52.05 75.53A40 40 0 0 1 85.21 18.10'];
 const logoMini = spin => '<svg class="logo-mini' + (spin ? ' spin' : '') + '" viewBox="36 6 104 104" aria-hidden="true"><g>' + LOGO_SEG.map((d, i) => '<path class="q' + (i + 1) + '" d="' + d + '"/>').join('') + '</g><circle cx="88" cy="58" r="10"/></svg>';
@@ -1049,6 +1072,7 @@ const IP = {
   warn: '<path d="M10.3 4.6a2 2 0 0 1 3.4 0l7.1 12.4A2 2 0 0 1 19.1 20H4.9a2 2 0 0 1-1.7-3L10.3 4.6Z"/><path d="M12 9.5v4M12 16.8h.01"/>',
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>',
   eyeOff: '<path d="M4 4l16 16M9.9 5.8A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3 3.7M6.3 7.6A16.6 16.6 0 0 0 2.5 12S6 18.5 12 18.5a9 9 0 0 0 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+  clip: '<path d="M20 11.6l-7.9 7.9a5 5 0 0 1-7.1-7.1l8.4-8.4a3.3 3.3 0 0 1 4.7 4.7l-8.3 8.3a1.7 1.7 0 0 1-2.4-2.4l7.7-7.7"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/>',
   search: '<circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.2 15.2 20 20"/>',
   play: '<path class="f" d="M8 5.6v12.8a1 1 0 0 0 1.5.9l10-6.4a1 1 0 0 0 0-1.8l-10-6.4A1 1 0 0 0 8 5.6Z"/>',
@@ -1322,7 +1346,8 @@ const FB = {
   },
   async deleteGroup(gid, info) {
     if (!navigator.onLine) throw new Error('Excluir o grupo precisa de internet.');
-    const paths = info.despesas.map(d => 'grupos/' + gid + '/despesas/' + d.id).concat(info.pagamentos.map(p => 'grupos/' + gid + '/pagamentos/' + p.id));
+    let comps = []; try { comps = (await this.db.collection('grupos/' + gid + '/comprovantes').get()).docs.map(x => 'grupos/' + gid + '/comprovantes/' + x.id); } catch (e) {}
+    const paths = comps.concat(info.despesas.map(d => 'grupos/' + gid + '/despesas/' + d.id), info.pagamentos.map(p => 'grupos/' + gid + '/pagamentos/' + p.id));
     for (let i = 0; i < paths.length; i += 400) { const b = this.db.batch(); paths.slice(i, i + 400).forEach(p => b.delete(this.db.doc(p))); await b.commit(); }
     const b = this.db.batch();
     info.membros.forEach(u => b.delete(this.db.doc('grupos/' + gid + '/membros/' + u)));
@@ -1362,6 +1387,9 @@ const FB = {
   deleteExpense(gid, id) { this.db.doc('grupos/' + gid + '/despesas/' + id).delete().catch(onWriteError); },
   savePayment(gid, id, d) { this.db.doc('grupos/' + gid + '/pagamentos/' + id).set(d).catch(onWriteError); },
   deletePayment(gid, id) { this.db.doc('grupos/' + gid + '/pagamentos/' + id).delete().catch(onWriteError); },
+  saveReceipt(gid, id, d) { this.db.doc('grupos/' + gid + '/comprovantes/' + id).set(d).catch(onWriteError); },
+  async getReceipt(gid, id) { const x = await this.db.doc('grupos/' + gid + '/comprovantes/' + id).get(); return x.exists ? x.data().img : ''; },
+  deleteReceipt(gid, id) { this.db.doc('grupos/' + gid + '/comprovantes/' + id).delete().catch(() => {}); },
   async restore(gid, data, modo, atual) {
     const ops = [];
     const keepE = new Set(data.despesas.map(d => d.id)), keepP = new Set(data.pagamentos.map(p => p.id));
@@ -1501,6 +1529,9 @@ const Demo = {
   deleteExpense(gid, id) { delete this.db.grupos[gid].despesas[id]; this.persist(); },
   savePayment(gid, id, d) { this.db.grupos[gid].pagamentos[id] = clone(d); this.persist(); },
   deletePayment(gid, id) { delete this.db.grupos[gid].pagamentos[id]; this.persist(); },
+  saveReceipt(gid, id, d) { try { localStorage.setItem('rateio.demo.comp.' + id, d.img); } catch (e) { toast('Sem espaço neste aparelho para guardar o comprovante da demonstração.'); } },
+  async getReceipt(gid, id) { try { return localStorage.getItem('rateio.demo.comp.' + id) || ''; } catch (e) { return ''; } },
+  deleteReceipt(gid, id) { try { localStorage.removeItem('rateio.demo.comp.' + id); } catch (e) {} },
   async restore(gid, data, modo) {
     const g = this.db.grupos[gid];
     if (modo === 'substituir') { g.despesas = {}; g.pagamentos = {}; }
@@ -2001,16 +2032,16 @@ function historyXLSX() {
 
   // Despesas
   const pcols = ids.map(u => 'Parte · ' + nm(u));
-  const dHead = ['Data', 'Descrição', 'Categoria', 'Pago por', 'Valor', 'Divisão', 'Parcela', 'Lançado por', 'Lançado em'].concat(pcols);
+  const dHead = ['Data', 'Descrição', 'Categoria', 'Pago por', 'Valor', 'Divisão', 'Parcela', 'Lançado por', 'Lançado em', 'Comprovante'].concat(pcols);
   const dRows = title('Despesas · ' + g.nome, 'Valores em reais. As colunas "Parte" mostram quanto cada pessoa consumiu em cada despesa. Use os filtros do cabeçalho.');
   const d0 = dRows.length; dRows.push(head(dHead));
   exps.forEach(e => dRows.push([{ d: e.data, s: 5 }, { v: e.descricao, s: 3 }, { v: catName(e.categoria), s: 3 }, { v: nm(e.pagador), s: 3 }, { v: R(e.valor), s: 4 }, { v: modo(e.modo), s: 3 },
-    { v: e.serie ? e.serie.k + ' de ' + e.serie.n + (e.serie.freq === 'semanal' ? ' (semanal)' : ' (mensal)') : '', s: 3 }, { v: nm(e.criadoPor || e.pagador), s: 3 }, { dt: e.criadoEm || '', s: 6 }]
+    { v: e.serie ? e.serie.k + ' de ' + e.serie.n + (e.serie.freq === 'semanal' ? ' (semanal)' : ' (mensal)') : '', s: 3 }, { v: nm(e.criadoPor || e.pagador), s: 3 }, { dt: e.criadoEm || '', s: 6 }, { v: e.comp ? 'Sim' : '', s: 3 }]
     .concat(ids.map(u => ({ v: R((e.divisao || {})[u] || 0), s: 4 })))));
   const dFirst = d0 + 2, dLast = d0 + 1 + exps.length;
-  dRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: exps.length + ' ' + plural(exps.length, 'despesa', 'despesas'), s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, exps.length ? { f: 'SUBTOTAL(9,E' + dFirst + ':E' + dLast + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }]
-    .concat(ids.map((_, k) => exps.length ? { f: 'SUBTOTAL(9,' + C(9 + k) + dFirst + ':' + C(9 + k) + dLast + ')', s: 8 } : { v: 0, s: 8 })) });
-  const shDesp = { name: 'Despesas', rows: dRows, freeze: d0 + 1, filter: 'A' + (d0 + 1) + ':' + C(dHead.length - 1) + Math.max(d0 + 1, dLast), cols: [12, 34, 18, 20, 14, 13, 16, 20, 17].concat(ids.map(() => 16)), merges: ['A1:' + C(Math.max(5, dHead.length - 1)) + '1', 'A2:' + C(Math.max(5, dHead.length - 1)) + '2'] };
+  dRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: exps.length + ' ' + plural(exps.length, 'despesa', 'despesas'), s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, exps.length ? { f: 'SUBTOTAL(9,E' + dFirst + ':E' + dLast + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }]
+    .concat(ids.map((_, k) => exps.length ? { f: 'SUBTOTAL(9,' + C(10 + k) + dFirst + ':' + C(10 + k) + dLast + ')', s: 8 } : { v: 0, s: 8 })) });
+  const shDesp = { name: 'Despesas', rows: dRows, freeze: d0 + 1, filter: 'A' + (d0 + 1) + ':' + C(dHead.length - 1) + Math.max(d0 + 1, dLast), cols: [12, 34, 18, 20, 14, 13, 16, 20, 17, 13].concat(ids.map(() => 16)), merges: ['A1:' + C(Math.max(5, dHead.length - 1)) + '1', 'A2:' + C(Math.max(5, dHead.length - 1)) + '2'] };
 
   // Partes (uma linha por pessoa)
   const pRows = title('Partes · ' + g.nome, 'Uma linha por pessoa em cada despesa. Ideal para tabela dinâmica: Pessoa nas linhas, Mês nas colunas, Parte nos valores.');
@@ -2023,10 +2054,10 @@ function historyXLSX() {
 
   // Pagamentos
   const gRows = title('Pagamentos · ' + g.nome, 'Acertos já registrados entre as pessoas. Eles baixam o saldo de quem pagou e de quem recebeu.');
-  const g0 = gRows.length; gRows.push(head(['Data', 'Quem pagou', 'Para quem', 'Valor', 'Observação', 'Registrado por', 'Registrado em']));
-  pays.forEach(p => gRows.push([{ d: p.data, s: 5 }, { v: nm(p.de), s: 3 }, { v: nm(p.para), s: 3 }, { v: R(p.valor), s: 4 }, { v: p.obs || '', s: 3 }, { v: nm(p.criadoPor || p.de), s: 3 }, { dt: p.criadoEm || '', s: 6 }]));
-  gRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: pays.length + ' ' + plural(pays.length, 'pagamento', 'pagamentos'), s: 7 }, { v: '', s: 7 }, pays.length ? { f: 'SUBTOTAL(9,D' + (g0 + 2) + ':D' + (g0 + 1 + pays.length) + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }] });
-  const shPag = { name: 'Pagamentos', rows: gRows, freeze: g0 + 1, filter: 'A' + (g0 + 1) + ':G' + Math.max(g0 + 1, g0 + 1 + pays.length), cols: [12, 20, 20, 14, 24, 20, 17], merges: ['A1:G1', 'A2:G2'] };
+  const g0 = gRows.length; gRows.push(head(['Data', 'Quem pagou', 'Para quem', 'Valor', 'Observação', 'Registrado por', 'Registrado em', 'Comprovante']));
+  pays.forEach(p => gRows.push([{ d: p.data, s: 5 }, { v: nm(p.de), s: 3 }, { v: nm(p.para), s: 3 }, { v: R(p.valor), s: 4 }, { v: p.obs || '', s: 3 }, { v: nm(p.criadoPor || p.de), s: 3 }, { dt: p.criadoEm || '', s: 6 }, { v: p.comp ? 'Sim' : '', s: 3 }]));
+  gRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: pays.length + ' ' + plural(pays.length, 'pagamento', 'pagamentos'), s: 7 }, { v: '', s: 7 }, pays.length ? { f: 'SUBTOTAL(9,D' + (g0 + 2) + ':D' + (g0 + 1 + pays.length) + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }] });
+  const shPag = { name: 'Pagamentos', rows: gRows, freeze: g0 + 1, filter: 'A' + (g0 + 1) + ':H' + Math.max(g0 + 1, g0 + 1 + pays.length), cols: [12, 20, 20, 14, 24, 20, 17, 13], merges: ['A1:H1', 'A2:H2'] };
 
   // Resumo
   const total = sum(exps, 'valor');
@@ -2062,6 +2093,86 @@ async function exportXLSX() {
   const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000); toast('Planilha gerada.');
 }
+
+
+/* ================= Comprovantes =================
+   A foto é sempre compactada no aparelho antes de subir: lado maior de até 1280 px, JPEG,
+   qualidade ajustada até ficar por volta de 180 KB (um comprovante fica legível assim).
+   Cada comprovante é um documento separado, baixado só quando alguém toca para ver. */
+const CMP = { pending: null, keep: null, removed: false, busy: false };
+const RC_CACHE = {};
+function compressReceipt(file) {
+  return new Promise((ok, no) => {
+    const fr = new FileReader();
+    fr.onerror = () => no(new Error('Não foi possível ler a imagem.'));
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = () => no(new Error('Esse arquivo não parece ser uma imagem.'));
+      img.onload = () => {
+        const W0 = img.naturalWidth || img.width, H0 = img.naturalHeight || img.height, LIM = 250000;
+        let max = 1280, q = 0.72, out = '', w = 0, h = 0;
+        for (let tries = 0; tries < 12; tries++) {
+          const k = Math.min(1, max / Math.max(W0, H0)); w = Math.max(1, Math.round(W0 * k)); h = Math.max(1, Math.round(H0 * k));
+          const c = document.createElement('canvas'); c.width = w; c.height = h;
+          const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+          out = c.toDataURL('image/jpeg', q);
+          if (out.length <= LIM) break;
+          if (q > 0.5) q = Math.round((q - 0.08) * 100) / 100; else max = Math.round(max * 0.82);
+        }
+        ok({ img: out, w, h, kb: Math.max(1, Math.round(out.length * 0.75 / 1024)), orig: Math.round(file.size / 1024) });
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+function cmpReset(item) { CMP.pending = null; CMP.removed = false; CMP.busy = false; CMP.keep = item && item.comp ? item.comp : null; }
+function cmpBoxHtml() {
+  if (CMP.busy) return '<div class="cmp"><span class="cmp-wait">' + logoMini(true) + 'Compactando a imagem…</span></div>';
+  const pick = lbl => '<label class="btn ghost file">' + ico('clip') + lbl + '<input type="file" accept="image/*" data-ch="cmp-file"></label>';
+  if (CMP.pending) return '<div class="cmp"><button type="button" class="cmp-th" data-a="cmp-view-new" aria-label="Ver comprovante"><img src="' + CMP.pending.img + '" alt=""></button>' +
+    '<div class="cmp-tx"><b>Comprovante anexado</b><small>Compactado: ' + CMP.pending.kb + ' KB' + (CMP.pending.orig > CMP.pending.kb ? ' (era ' + (CMP.pending.orig >= 1024 ? (CMP.pending.orig / 1024).toFixed(1).replace('.', ',') + ' MB' : CMP.pending.orig + ' KB') + ')' : '') + '</small>' +
+    '<div class="cmp-ac">' + pick('Trocar').replace('btn ghost file', 'btn ghost sm file') + '<button type="button" class="btn plain sm" data-a="cmp-rm">Remover</button></div></div></div>';
+  if (CMP.keep && !CMP.removed) return '<div class="cmp"><button type="button" class="cmp-th" data-a="cmp-view" data-id="' + esc(CMP.keep.id) + '" aria-label="Ver comprovante">' + ico('clip') + '</button>' +
+    '<div class="cmp-tx"><b>Comprovante anexado</b><small>' + (CMP.keep.kb ? CMP.keep.kb + ' KB · ' : '') + 'toque para ver</small>' +
+    '<div class="cmp-ac">' + pick('Trocar').replace('btn ghost file', 'btn ghost sm file') + '<button type="button" class="btn plain sm" data-a="cmp-rm">Remover</button></div></div></div>';
+  return pick('Anexar foto do comprovante');
+}
+const cmpField = () => '<div class="fld grp" id="cmp-fld"><span class="lgd">Comprovante (opcional)</span><div id="cmp-box">' + cmpBoxHtml() + '</div></div>';
+function cmpPaint() { const b = $('#cmp-box'); if (b) b.innerHTML = cmpBoxHtml(); }
+/* grava o comprovante novo (se houver) e devolve a referência que vai na despesa/pagamento */
+function cmpCommit(old) {
+  let comp = null;
+  if (CMP.pending) { const id = store.newId(); store.saveReceipt(S.gid, id, { img: CMP.pending.img, kb: CMP.pending.kb, w: CMP.pending.w, h: CMP.pending.h, criadoPor: me(), criadoEm: new Date().toISOString() }); RC_CACHE[id] = CMP.pending.img; comp = { id, kb: CMP.pending.kb }; }
+  else if (CMP.keep && !CMP.removed) comp = CMP.keep;
+  if (old && old.comp && (!comp || comp.id !== old.comp.id)) cmpMaybeDelete(old.comp.id, old.id);
+  return comp;
+}
+function cmpMaybeDelete(cid, exceptId) {
+  const used = S.expenses.concat(S.payments).some(x => x.id !== exceptId && x.comp && x.comp.id === cid);
+  if (!used) { store.deleteReceipt(S.gid, cid); delete RC_CACHE[cid]; }
+}
+/* visualizador por cima de tudo: não fecha o formulário que estiver aberto */
+async function openReceipt(id, src) {
+  const ov = document.createElement('div');
+  ov.className = 'rc-ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Comprovante');
+  ov.innerHTML = '<div class="rc-top"><b>Comprovante</b><button type="button" class="rc-x">Fechar</button></div><div class="rcpt" id="rcpt">' +
+    (src ? '<img src="' + src + '" alt="Comprovante">' : '<span class="cmp-wait">' + logoMini(true) + 'Carregando…</span>') + '</div><p class="rc-hint">Toque na imagem para ampliar e arraste para ler os detalhes.</p>';
+  document.body.appendChild(ov);
+  const close = () => { ov.remove(); document.removeEventListener('keydown', esc1); };
+  const esc1 = e => { if (e.key === 'Escape') close(); };
+  document.addEventListener('keydown', esc1);
+  ov.querySelector('.rc-x').onclick = close;
+  ov.addEventListener('click', e => { if (e.target === ov) close(); if (e.target.tagName === 'IMG') ov.querySelector('.rcpt').classList.toggle('zoom'); });
+  if (src) return;
+  try {
+    const img = RC_CACHE[id] || await store.getReceipt(S.gid, id);
+    const box = ov.querySelector('.rcpt');
+    if (!img) { box.innerHTML = '<span class="cmp-wait">Comprovante não encontrado. Pode ter sido removido.</span>'; return; }
+    RC_CACHE[id] = img; box.innerHTML = '<img src="' + img + '" alt="Comprovante">';
+  } catch (e) { const box = ov.querySelector('.rcpt'); if (box) box.innerHTML = '<span class="cmp-wait">Sem conexão para baixar o comprovante.</span>'; }
+}
+let SHEET_BACK = [];
 
 /* ================= Face ID ================= */
 /* Desbloqueio local com o Face ID/Touch ID do aparelho (WebAuthn). O primeiro acesso é
@@ -2507,7 +2618,7 @@ const VIEWS = {
       '<span class="hero-s">' + (snaps.length ? 'Última cópia automática: ' + fmtDateTime(snaps[0].em) : 'Ainda sem cópia automática neste aparelho') + '</span></div>' +
       '<div class="hero-kpis"><div><span>Despesas</span><b>' + S.expenses.length + '</b></div><div><span>Pagamentos</span><b>' + S.payments.length + '</b></div><div><span>Cópias aqui</span><b>' + snaps.length + '</b></div></div></section>';
     h += '<section class="block" id="sec-exportar"><h2 class="h">Salvar um backup</h2>' +
-      '<p class="hint" style="margin:-4px 0 14px">O <b>.json</b> é a cópia completa para restaurar. O <b>Excel</b> é para ler: abas de Resumo, Despesas, Partes e Pagamentos, com filtros e totais. No iPhone, salve em Arquivos ou no Google Drive.</p>' +
+      '<p class="hint" style="margin:-4px 0 14px">O <b>.json</b> é a cópia completa para restaurar (as fotos dos comprovantes ficam guardadas no grupo e não entram no arquivo). O <b>Excel</b> é para ler: abas de Resumo, Despesas, Partes e Pagamentos, com filtros e totais. No iPhone, salve em Arquivos ou no Google Drive.</p>' +
       '<div class="btns"><button class="btn" data-a="bk-json">' + ico('share') + 'Exportar backup (.json)</button>' +
       '<div class="row2"><button class="btn ghost" data-a="hist-csv">' + ico('table') + 'Excel (.xlsx)</button><button class="btn ghost" data-a="bk-copy">' + ico('copy') + 'Copiar backup</button></div></div></section>';
     h += '<section class="block" id="sec-restaurar"><h2 class="h">Ler e restaurar</h2>' +
@@ -2655,6 +2766,7 @@ const GUIAS = [
         passos: [
           'De volta ao wirteilen, toque em ' + _gvBt('Já pagou? Registrar pagamento', 'checkCircle') + '.',
           'O valor já vem preenchido com o que a pessoa deve. Confira quem pagou, para quem e a data; se pagou outro valor, é só trocar.',
+          'Se quiser, anexe o comprovante do Pix em ' + _gvBt('Anexar foto do comprovante', 'clip') + '. O app compacta a imagem.',
           'Toque em ' + _gvBt('Registrar pagamento', '', 'primary') + '.',
         ],
         nota: 'Registrou errado? Toque no pagamento na lista e use ' + _gvBt('Excluir pagamento', 'trash', 'danger') + ' (toque duas vezes para confirmar). Só quem registrou pode editar ou excluir.' },
@@ -2841,6 +2953,10 @@ const MAN_SECOES = [
     faz: 'Manda uma imagem com o visual do app: o código do grupo e os passos para entrar, ou o que o app faz e como instalar.',
     uso: 'Na engrenagem do topo: <b>Enviar convite no WhatsApp</b> ou <b>Indicar o wirteilen no WhatsApp</b>.',
     det: 'A imagem vai com uma legenda só com o link, que fica clicável no WhatsApp. Quem toca no link do convite entra direto no grupo depois de criar a conta.' },
+  { id: 'comprovante', ic: 'clip', t: 'Comprovante', s: 'Foto da nota ou do Pix.',
+    faz: 'Anexa uma foto à despesa ou ao pagamento. Na lista, aparece um clipe ao lado da data.',
+    uso: 'No formulário, toque em <b>Anexar foto do comprovante</b> e tire a foto ou escolha da galeria. Para ver, toque no clipe; toque na imagem para ampliar.',
+    det: 'O app sempre compacta a foto antes de guardar (lado maior de até 1280 px, por volta de 180 KB), para não gastar o espaço gratuito da base. Só quem lançou troca ou remove o comprovante.' },
   { id: 'excel', ic: 'table', t: 'Planilha Excel', s: 'Histórico do grupo em abas.',
     faz: 'Gera um arquivo .xlsx com as abas Resumo, Despesas, Partes e Pagamentos, com cabeçalho, filtros, datas, moeda em R$ e totais.',
     uso: 'Na aba Backup, toque em <b>Excel (.xlsx)</b>. No iPhone, salve em Arquivos ou abra no Excel.',
@@ -2864,7 +2980,7 @@ const MAN_SECOES = [
   { id: 'versao', ic: 'info', t: 'Versão', s: 'wirteilen v' + APP_VERSION + '.',
     faz: 'A versão aparece na tela de entrada e no fim de Ajustes.',
     uso: 'Ao relatar um problema, diga a versão.',
-    det: 'A 0.8 deixa os envios só pelo WhatsApp, como imagem com o link na legenda. A 0.7 deixa o selo de em dia verde e troca a planilha .csv por um Excel formatado. A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
+    det: 'A 0.9 permite anexar comprovante como foto, sempre compactada. A 0.8 deixa os envios só pelo WhatsApp, como imagem com o link na legenda. A 0.7 deixa o selo de em dia verde e troca a planilha .csv por um Excel formatado. A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
   { id: 'divisao', ic: 'person2', t: 'Modos de divisão', s: 'Igual, Valores e Partes.',
     faz: 'Define quanto da despesa cabe a cada pessoa.',
     uso: '<b>Igual</b> divide entre os marcados. <b>Valores</b> recebe o valor exato de cada um. <b>Partes</b> divide por peso (2 partes pagam o dobro de 1).',
@@ -3083,13 +3199,13 @@ function expRow(e) {
   else { note2 = 'fora da divisão'; cls = 'muted'; }
   const n = Object.values(e.divisao || {}).filter(v => v > 0).length;
   return '<button class="row" data-a="edit-exp" data-id="' + esc(e.id) + '"><span class="tile" style="--c:' + cat.c + '" title="' + esc(cat.nome) + '">' + ico(cat.ic) + '</span>' +
-    '<span class="row-main"><span class="row-t">' + esc(e.descricao) + '</span><span class="row-s">' + (podeEditar(e) ? '' : '<span class="lk" title="Só quem lançou edita">' + ico('lock') + '</span>') + dp.d + ' ' + dp.m + ' · ' + esc(who(e.pagador)) + ' pagou · ' + n + ' ' + plural(n, 'pessoa', 'pessoas') + '</span></span>' +
+    '<span class="row-main"><span class="row-t">' + esc(e.descricao) + '</span><span class="row-s">' + (podeEditar(e) ? '' : '<span class="lk" title="Só quem lançou edita">' + ico('lock') + '</span>') + (e.comp ? '<span class="clip" title="Tem comprovante">' + ico('clip') + '</span>' : '') + dp.d + ' ' + dp.m + ' · ' + esc(who(e.pagador)) + ' pagou · ' + n + ' ' + plural(n, 'pessoa', 'pessoas') + '</span></span>' +
     '<span class="row-v"><b>' + brl(e.valor) + '</b><small class="' + cls + '">' + note2 + '</small></span></button>';
 }
 function payRow(p) {
   const dp = dayParts(p.data);
   return '<button class="row pay" data-a="edit-pay" data-id="' + esc(p.id) + '"><span class="tile" style="--c:var(--pos)">' + ico('checkCircle') + '</span>' +
-    '<span class="row-main"><span class="row-t">' + esc(who(p.de)) + ' pagou ' + esc(who(p.para, true)) + '</span><span class="row-s">' + (podeEditar(p) ? '' : '<span class="lk" title="Só quem registrou edita">' + ico('lock') + '</span>') + '<span class="tag">Acerto</span>' + dp.d + ' ' + dp.m + (p.obs ? ' · ' + esc(p.obs) : '') + '</span></span>' +
+    '<span class="row-main"><span class="row-t">' + esc(who(p.de)) + ' pagou ' + esc(who(p.para, true)) + '</span><span class="row-s">' + (podeEditar(p) ? '' : '<span class="lk" title="Só quem registrou edita">' + ico('lock') + '</span>') + (p.comp ? '<span class="clip" title="Tem comprovante">' + ico('clip') + '</span>' : '') + '<span class="tag">Acerto</span>' + dp.d + ' ' + dp.m + (p.obs ? ' · ' + esc(p.obs) : '') + '</span></span>' +
     '<span class="row-v"><b class="muted">' + brl(p.valor) + '</b></span></button>';
 }
 function vistoKey() { return 'rateio.visto.' + me() + '.' + S.gid; }
@@ -3170,6 +3286,7 @@ function roLock(x, oque) {
     (saiu ? 'Se precisar corrigir, quem criou o grupo pode restaurar um backup.' : 'Se algo estiver errado, peça para essa pessoa corrigir.') + '</span></div>';
 }
 function openExpenseView(e) {
+  SHEET_BACK = ['expv', e.id];
   const cat = catOf(e.categoria), ids = Object.keys(e.divisao || {}).filter(u => e.divisao[u] > 0);
   openSheet(sheetHead('Despesa') +
     '<div class="ro-list"><div><span>Descrição</span><b>' + esc(e.descricao) + '</b></div><div><span>Valor</span><b>' + brl(e.valor) + '</b></div>' +
@@ -3178,13 +3295,16 @@ function openExpenseView(e) {
     (e.serie ? '<div><span>Repetição</span><b>' + e.serie.k + ' de ' + e.serie.n + ' (' + (e.serie.freq === 'semanal' ? 'toda semana' : 'todo mês') + ')</b></div>' : '') + '</div>' +
     '<h3 class="h3">Divisão (' + esc(({ igual: 'igual', valores: 'por valores', partes: 'por partes' })[e.modo] || 'igual') + ')</h3>' +
     '<div class="ro-list">' + ids.map(u => '<div>' + person(u, 24) + '<b>' + brl(e.divisao[u]) + '</b></div>').join('') + '</div>' +
+    (e.comp ? '<div class="cmp" style="margin-bottom:12px"><button type="button" class="cmp-th" data-a="cmp-view" data-id="' + esc(e.comp.id) + '" aria-label="Ver comprovante">' + ico('clip') + '</button><div class="cmp-tx"><b>Comprovante</b><small>' + (e.comp.kb ? e.comp.kb + ' KB · ' : '') + 'toque para ver</small></div></div>' : '') +
     roLock(e, 'lançou') + '<div class="btns" style="margin-bottom:10px"><button class="btn wa" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('chat') + 'Enviar no WhatsApp</button></div>' +
     '<p class="hint">Lançada por ' + esc(who(autor(e))) + (e.criadoEm ? ' em ' + fmtDateTime(e.criadoEm) : '') + (e.atualizadoEm && e.atualizadoEm !== e.criadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '.</p>', 'Despesa', 'k1');
 }
 function openPaymentView(p) {
+  SHEET_BACK = ['payv', p.id];
   openSheet(sheetHead('Pagamento') +
     '<div class="ro-list"><div><span>Quem pagou</span><b>' + esc(who(p.de)) + '</b></div><div><span>Para quem</span><b>' + esc(who(p.para)) + '</b></div>' +
     '<div><span>Valor</span><b>' + brl(p.valor) + '</b></div><div><span>Data</span><b>' + fmtDate(p.data) + '</b></div>' + (p.obs ? '<div><span>Observação</span><b>' + esc(p.obs) + '</b></div>' : '') + '</div>' +
+    (p.comp ? '<div class="cmp" style="margin-bottom:12px"><button type="button" class="cmp-th" data-a="cmp-view" data-id="' + esc(p.comp.id) + '" aria-label="Ver comprovante">' + ico('clip') + '</button><div class="cmp-tx"><b>Comprovante do pagamento</b><small>' + (p.comp.kb ? p.comp.kb + ' KB · ' : '') + 'toque para ver</small></div></div>' : '') +
     roLock(p, 'registrou') +
     '<p class="hint">Registrado por ' + esc(who(autor(p))) + (p.criadoEm ? ' em ' + fmtDateTime(p.criadoEm) : '') + '.</p>', 'Pagamento', 'k3');
 }
@@ -3192,6 +3312,7 @@ function openExpense(id) {
   const e = id ? S.expenses.find(x => x.id === id) : null;
   if (id && !e) return;
   if (e && !podeEditar(e)) return openExpenseView(e);
+  cmpReset(e); SHEET_BACK = ['exp', id || ''];
   const ids = Array.from(new Set(memberIds().concat(e ? [e.pagador].concat(Object.keys(e.divisao || {})) : [])));
   EXP = {
     id: e ? e.id : null, ids, modo: e ? e.modo || 'igual' : 'igual',
@@ -3219,7 +3340,7 @@ function openExpense(id) {
     '<div class="fld grp" role="group" aria-label="Quem pagou"><span class="lgd">Quem pagou</span><div class="chips">' + ids.map(u => '<label class="chip"><input type="radio" name="pagador" value="' + esc(u) + '"' + (u === pag ? ' checked' : '') + '><span>' + markOf(u, 20) + esc(who(u)) + '</span></label>').join('') + '</div></div>' +
     '<div class="fld grp" role="group" aria-label="Como dividir"><span class="lgd">Como dividir</span><div class="seg">' + MODOS.map(m => '<label><input type="radio" name="modo" value="' + m.id + '"' + (m.id === EXP.modo ? ' checked' : '') + ' data-ch="exp-modo"><span>' + m.nome + '</span></label>').join('') + '</div>' +
     '<div id="ex-split" class="split"></div><p id="ex-status" class="split-status" aria-live="polite"></p></div>' +
-    repF + avisarF +
+    cmpField() + repF + avisarF +
     '<div class="sheet-actions"><button class="btn">' + (e ? 'Salvar alterações' : 'Lançar despesa') + '</button>' +
     (e ? '<button type="button" class="btn ghost" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('chat') + 'Enviar no WhatsApp</button>' : '') +
     (e ? '<button type="button" class="btn danger" data-a="del-exp" data-id="' + esc(e.id) + '">' + ico('trash') + 'Excluir despesa</button><p class="hint">Lançada por ' + esc(who(e.criadoPor || e.pagador)) + (e.atualizadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '</p>' : '') +
@@ -3273,6 +3394,7 @@ function openPayment(id, pre) {
   const p = id ? S.payments.find(x => x.id === id) : null;
   if (id && !p) return;
   if (p && !podeEditar(p)) return openPaymentView(p);
+  cmpReset(p); SHEET_BACK = ['pay', id || ''];
   pre = pre || {};
   const ids = Array.from(new Set(memberIds().concat(p ? [p.de, p.para] : [])));
   let de, para;
@@ -3294,7 +3416,7 @@ function openPayment(id, pre) {
     '<div class="row2"><label class="fld"><span>Valor (R$)</span><input id="pg-valor" name="valor" inputmode="numeric" pattern="[0-9]*" data-money required autocomplete="off" value="' + (valor ? centsToInput(valor) : '') + '"></label>' +
     '<label class="fld"><span>Data</span><input id="pg-data" type="date" name="data" required value="' + (p ? p.data : todayISO()) + '"></label></div>' +
     (p ? '' : '<p class="hint" id="pg-sug" style="margin:-6px 0 14px">' + esc(textoSugestao(de, para, sug)) + '</p>') +
-    '<label class="fld"><span>Observação</span><input id="pg-obs" name="obs" maxlength="60" placeholder="Ex.: Pix, dinheiro" value="' + esc(p ? p.obs : 'Pix') + '"></label>' +
+    cmpField() + '<label class="fld"><span>Observação</span><input id="pg-obs" name="obs" maxlength="60" placeholder="Ex.: Pix, dinheiro" value="' + esc(p ? p.obs : 'Pix') + '"></label>' +
     '<p class="hint">Registrar não move dinheiro. Serve para o saldo do grupo refletir o que já foi pago.</p>' +
     '<div class="sheet-actions"><button class="btn">' + (p ? 'Salvar pagamento' : 'Registrar pagamento') + '</button>' +
     (p ? '<button type="button" class="btn danger" data-a="del-pay" data-id="' + esc(p.id) + '">' + ico('trash') + 'Excluir pagamento</button>' : '') + '</div></form>', 'Pagamento');
@@ -3706,6 +3828,9 @@ const ACTIONS = {
   'hint-x'(t) { const tb = t.dataset.tt || 'despesas'; LS.set('rateio.tour.' + tb, true); if (tb === 'despesas') LS.set('rateio.dica.ok', true); renderMain(); },
   'gv-toggle'(t) { _gvToggle(t.dataset.g); },
   avatar: openAvatar,
+  'cmp-rm'() { CMP.pending = null; CMP.removed = true; cmpPaint(); },
+  'cmp-view'(t) { openReceipt(t.dataset.id); },
+  'cmp-view-new'() { if (CMP.pending) openReceipt(null, CMP.pending.img); },
   'share-card'() {
     if (!SHARE.file) return toast('A imagem ainda está sendo montada. Um instante.');
     const f = SHARE.file;
@@ -3783,7 +3908,7 @@ const ACTIONS = {
   'pick-group'(t) { closeSheet(); S.tab = 'despesas'; selectGroup(t.dataset.id); window.scrollTo(0, 0); setTimeout(() => animView(''), 30); },
   'new-exp'() { openExpense(); },
   'edit-exp'(t) { openExpense(t.dataset.id); },
-  'del-exp'(t) { if (!podeEditar(S.expenses.find(x => x.id === t.dataset.id))) return toast('Só quem lançou pode excluir.'); if (!arm(t, 'Toque de novo para excluir')) return; store.deleteExpense(S.gid, t.dataset.id); closeSheet(); toast('Despesa excluída'); },
+  'del-exp'(t) { if (!podeEditar(S.expenses.find(x => x.id === t.dataset.id))) return toast('Só quem lançou pode excluir.'); if (!arm(t, 'Toque de novo para excluir')) return; const ex = S.expenses.find(x => x.id === t.dataset.id); store.deleteExpense(S.gid, t.dataset.id); if (ex && ex.comp) cmpMaybeDelete(ex.comp.id, ex.id); closeSheet(); toast('Despesa excluída'); },
   peso(t) { const u = t.dataset.u; EXP.pesos[u] = Math.max(0, Math.min(20, (EXP.pesos[u] || 0) + Number(t.dataset.d))); renderSplit(); },
   pix(t) { openPix(t.dataset.de, t.dataset.para, Number(t.dataset.v)); },
   'pay-new'(t) { openPayment(null, t.dataset.de ? { de: t.dataset.de, para: t.dataset.para, valor: Number(t.dataset.v) } : null); },
@@ -3791,7 +3916,7 @@ const ACTIONS = {
   'del-account'() { openDeleteAccount(); },
   'chg-email'() { openChangeEmail(); },
   'chg-pass'() { openChangePass(); },
-  'del-pay'(t) { if (!podeEditar(S.payments.find(x => x.id === t.dataset.id))) return toast('Só quem registrou pode excluir.'); if (!arm(t, 'Toque de novo para excluir')) return; store.deletePayment(S.gid, t.dataset.id); closeSheet(); toast('Pagamento excluído'); },
+  'del-pay'(t) { if (!podeEditar(S.payments.find(x => x.id === t.dataset.id))) return toast('Só quem registrou pode excluir.'); if (!arm(t, 'Toque de novo para excluir')) return; const px = S.payments.find(x => x.id === t.dataset.id); store.deletePayment(S.gid, t.dataset.id); if (px && px.comp) cmpMaybeDelete(px.comp.id, px.id); closeSheet(); toast('Pagamento excluído'); },
   copy(t) { copyText(t.dataset.text, t.dataset.ok); },
   async logout() {
     const wasDemo = store === Demo;
@@ -3884,6 +4009,8 @@ const FORMS = {
       criadoPor: old ? old.criadoPor || old.pagador : me(), criadoEm: old ? old.criadoEm || now : now, atualizadoEm: now, atualizadoPor: me(),
     };
     if (EXP.modo === 'partes') { base.pesos = {}; EXP.ids.forEach(u => { if (EXP.pesos[u] > 0) base.pesos[u] = EXP.pesos[u]; }); }
+    if (CMP.busy) return toast('Espere a imagem terminar de compactar.');
+    const comp = cmpCommit(old); if (comp) base.comp = comp;
     LS.set('rateio.ultcat.' + S.gid, base.categoria);
     if (old) {
       if (old.serie) base.serie = old.serie;
@@ -3909,7 +4036,10 @@ const FORMS = {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(data)) return fail(f.data, 'Informe a data.');
     const id = f.dataset.id, old = id ? S.payments.find(x => x.id === id) : null, now = new Date().toISOString();
     if (old && !podeEditar(old)) return toast('Só quem registrou pode editar.');
-    store.savePayment(S.gid, id || store.newId(), { de, para, valor, data, obs: f.obs.value.trim(), criadoPor: old ? old.criadoPor || me() : me(), criadoEm: old ? old.criadoEm || now : now, atualizadoEm: now });
+    if (CMP.busy) return toast('Espere a imagem terminar de compactar.');
+    const pd = { de, para, valor, data, obs: f.obs.value.trim(), criadoPor: old ? old.criadoPor || me() : me(), criadoEm: old ? old.criadoEm || now : now, atualizadoEm: now };
+    const comp = cmpCommit(old); if (comp) pd.comp = comp;
+    store.savePayment(S.gid, id || store.newId(), pd);
     closeSheet();
     if (id) { toast('Pagamento atualizado'); return; }
     setTimeout(() => { const bb = balances(); celebrate('Pagamento registrado', (de === me() || para === me()) && (bb[me()] || 0) === 0 ? 'Você está em dia com o grupo.' : who(de) + ' → ' + who(para, true) + ' · ' + brl(valor)); }, 60);
@@ -3976,6 +4106,12 @@ document.addEventListener('submit', ev => {
 /* ================= Mudanças em campos ================= */
 document.addEventListener('change', ev => {
   const t = ev.target, k = t.dataset.ch;
+  if (k === 'cmp-file') {
+    const file = t.files && t.files[0]; if (!file) return;
+    CMP.busy = true; cmpPaint();
+    compressReceipt(file).then(r => { CMP.busy = false; CMP.pending = r; CMP.removed = false; cmpPaint(); }).catch(er => { CMP.busy = false; cmpPaint(); toast(er.message); });
+    return;
+  }
   if (k === 'exp-modo') { EXP.modo = t.value; renderSplit(); }
   else if (k === 'exp-rep') { EXP.rep.freq = t.value; $('#ex-rep').hidden = t.value === 'nao'; repPreview(); }
   else if (t.name === 'pagador' && EXP) updateSplit();
