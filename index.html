@@ -970,7 +970,7 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 const CFG = window.FIREBASE_CONFIG || {};
 const HAS_FB = !!(CFG.apiKey && CFG.projectId);
 const FB_VERSION = '10.12.2';
-const APP_VERSION = '0.7';
+const APP_VERSION = '0.8';
 /* Logo: anel em três partes (três amigos) + ponto central (a conta). */
 const LOGO_SEG = ['M90.79 18.10A40 40 0 0 1 123.95 75.53', 'M121.16 80.37A40 40 0 0 1 54.84 80.37', 'M52.05 75.53A40 40 0 0 1 85.21 18.10'];
 const logoMini = spin => '<svg class="logo-mini' + (spin ? ' spin' : '') + '" viewBox="36 6 104 104" aria-hidden="true"><g>' + LOGO_SEG.map((d, i) => '<path class="q' + (i + 1) + '" d="' + d + '"/>').join('') + '</g><circle cx="88" cy="58" r="10"/></svg>';
@@ -1529,10 +1529,10 @@ const TOURS = {
     { sheet: 'exp', sel: 'input[name="pagador"]', up: 3, t: 'Quem pagou', x: 'Já vem marcado com você. Troque se outra pessoa pagou a conta.' },
     { sheet: 'exp', sel: 'input[name="modo"]', up: 3, t: 'Como dividir', x: '<b>Igual</b> entre os marcados, <b>Valores</b> exatos por pessoa ou <b>Partes</b> (um casal conta 2). A linha de baixo confirma a divisão.' },
     { sheet: 'exp', sel: 'input[name="rep"]', up: 3, t: 'Repetir em parcelas', x: 'Para conta que se repete (aluguel, mensalidade, parcelas do cartão): escolha <b>Toda semana</b> ou <b>Todo mês</b> e quantas vezes. O app lança cada uma na data certa.' },
-    { sheet: 'exp', sel: '#ex-avisar', up: 1, t: 'Avisar o grupo', x: 'Ligado, os amigos veem a despesa em <b>Novidades</b> ao abrir o app, e você pode mandar a mensagem pronta no WhatsApp.' },
+    { sheet: 'exp', sel: '#ex-avisar', up: 1, t: 'Avisar o grupo', x: 'Ligado, os amigos veem a despesa em <b>Novidades</b> ao abrir o app, e você manda a imagem da despesa no WhatsApp.' },
     { sel: '#view .list', t: 'Histórico do grupo', x: 'Despesas e pagamentos por mês, do mais novo para o mais antigo. Toque para ver os detalhes. Só quem lançou <b>edita ou exclui</b>; os lançamentos dos outros aparecem com um cadeado.' },
     { sel: '.tabs', t: 'As abas', x: '<b>Saldos</b>: quem paga quem e o Pix. <b>Resumo</b>: para onde foi o dinheiro. <b>Backup</b>: salvar e restaurar. <b>Ajustes</b>: sua conta e seu Pix. <b>Manual</b>: o passo a passo.' },
-    { sel: '#gear', t: 'O grupo na engrenagem', x: 'A engrenagem abre o grupo: <b>enviar o convite</b> como imagem (qualquer pessoa) e, para quem criou, <b>remover pessoas</b>, mudar o nome e as categorias.' },
+    { sel: '#gear', t: 'O grupo na engrenagem', x: 'A engrenagem abre o grupo: <b>enviar o convite no WhatsApp</b> (qualquer pessoa) e, para quem criou, <b>remover pessoas</b>, mudar o nome e as categorias.' },
     { sel: '#help', t: 'Tour quando quiser', x: 'O <b>?</b> repete o tour da tela em que você estiver.' },
   ],
   saldos: [
@@ -1801,7 +1801,7 @@ const CARDS = {
     if (pes.length > 8) people.push({ nome: '+ ' + (pes.length - 8) + ' pessoas', ini: '+', valor: brl(sum(pes.slice(8), x => x[1])) });
     const dataTxt = n > 1 ? fmtDate(d.data) + ' a ' + fmtDate(addPeriod(d.data, freq, n - 1)) : fmtDate(d.data);
     return {
-      sheetTitle: 'Enviar despesa', fileName: 'wirteilen-despesa.png', title: 'Despesa no wirteilen', text: notifyText(d, n, desc, freq),
+      sheetTitle: 'Enviar despesa', fileName: 'wirteilen-despesa.png', title: 'Despesa no wirteilen', link: appUrl(),
       card: { tone: 'k1', icon: cat.ic, kicker: 'Nova despesa · ' + g.nome, title: desc, big: brl(d.valor),
         sub: n > 1 ? n + ' vezes, ' + (freq === 'semanal' ? 'toda semana' : 'todo mês') + ' · total ' + brl(d.valor * n) : cat.nome,
         rows: [['Pago por', imgPerson(d.pagador).nome], ['Data', dataTxt], ['Categoria', cat.nome], ['Lançado por', quem]],
@@ -1812,7 +1812,7 @@ const CARDS = {
   convite() {
     const g = group(), url = appUrl(), meuNome = S.profile.nome || '';
     return {
-      sheetTitle: 'Enviar convite do grupo', fileName: 'wirteilen-convite.png', title: 'Convite para o grupo ' + g.nome, text: groupInviteBody(), mail: mailtoGroup(),
+      sheetTitle: 'Enviar convite do grupo', fileName: 'wirteilen-convite.png', title: 'Convite para o grupo ' + g.nome, link: url ? url + '?convite=' + g.codigo : '',
       card: { tone: 'k5', icon: 'person2', kicker: 'Convite', title: 'Entre no grupo ' + g.nome, sub: memberIds().length + ' ' + plural(memberIds().length, 'pessoa já está', 'pessoas já estão') + ' dividindo as despesas por aqui.',
         rows: [['Convite de', meuNome || 'um amigo'], ['Pessoas no grupo', String(memberIds().length)]],
         code: g.codigo,
@@ -1823,7 +1823,7 @@ const CARDS = {
   app() {
     const url = appUrl();
     return {
-      sheetTitle: 'Indicar o wirteilen', fileName: 'wirteilen.png', title: 'Conheça o wirteilen', text: appInviteText(), mail: mailtoApp(),
+      sheetTitle: 'Indicar o wirteilen', fileName: 'wirteilen.png', title: 'Conheça o wirteilen', link: url,
       card: { tone: 'k3', icon: 'iphone', kicker: 'Convite', title: 'Conheça o wirteilen', sub: 'Despesas divididas entre amigos, sem planilha e sem conta de cabeça.',
         lists: [{ title: 'O que ele faz', check: true, items: ['Cada um lança os gastos pelo celular', 'O saldo de todos fecha sozinho', 'O Pix já sai com o valor certo'] },
                 { title: 'Para instalar no iPhone', items: ['Abra o link no Safari', 'Toque em Compartilhar', 'Toque em Adicionar à Tela de Início'] }],
@@ -1834,7 +1834,7 @@ const CARDS = {
     const g = group(), np = imgPerson(para).nome, nd = imgPerson(de).nome;
     return {
       sheetTitle: 'Enviar cobrança Pix', fileName: 'wirteilen-pix.png', title: 'Pix de ' + brl(valor),
-      text: 'Pix de ' + brl(valor) + ' para ' + np + ' (grupo ' + g.nome + '). No app do banco, use Pix › Pix copia e cola e cole este código:\n' + payload,
+      link: payload,
       card: { tone: 'k6', icon: 'qrcode', kicker: 'Pix · ' + g.nome, title: nd.split(' ')[0] + ' paga ' + np.split(' ')[0], big: brl(valor), sub: 'Escaneie o QR Code ou use o Pix copia e cola. O valor já vem preenchido.',
         rows: [['Recebedor', recebedor], ['Chave (' + tipo + ')', chave]], qr: qrSvg(payload), payload, foot: 'Depois de pagar, registre no app' },
     };
@@ -1843,28 +1843,29 @@ const CARDS = {
 const SHARE = {};
 async function openShareCard(kind, data, lead) {
   const spec = CARDS[kind](data || {});
-  Object.assign(SHARE, { file: null, text: spec.text, title: spec.title, name: spec.fileName });
+  Object.assign(SHARE, { file: null, blob: null, link: spec.link || '', title: spec.title, name: spec.fileName, kind });
+  const legenda = kind === 'pix' ? 'Na legenda vai só o <b>Pix copia e cola</b>, para quem recebe copiar com um toque.'
+    : SHARE.link ? 'Na legenda vai só o <b>link</b> ' + (kind === 'convite' ? 'do convite' : 'do app') + ', que fica clicável no WhatsApp.' : '';
   openSheet(sheetHead(spec.sheetTitle) + (lead ? '<p class="lead">' + lead + '</p>' : '') +
     '<div class="share-prev" id="share-prev"><span class="share-wait">' + logoMini(true) + 'Montando a imagem…</span></div>' +
     '<div class="sheet-actions"><button class="btn wa" data-a="share-card">' + ico('chat') + 'Enviar no WhatsApp</button>' +
-    '<div class="row2"><button class="btn ghost" data-a="share-card">' + ico('share') + 'Outros apps</button><button class="btn ghost" data-a="copy" data-text="' + esc(spec.text) + '" data-ok="Mensagem copiada">' + ico('copy') + 'Copiar texto</button></div>' +
-    (spec.mail ? '<a class="btn plain" href="' + esc(spec.mail) + '">' + ico('envelope') + 'Enviar por e-mail (texto)</a>' : '') +
-    '<button class="btn plain" data-a="share-wa-text">' + ico('chat') + 'Só o texto no WhatsApp</button>' +
-    '<p class="hint">No iPhone, "Enviar no WhatsApp" abre a lista de apps: toque em WhatsApp e escolha a conversa. A imagem vai junto com a mensagem.</p></div>', 'Compartilhar', 'k1');
+    '<p class="hint">Toque em <b>WhatsApp</b> na lista que abrir e escolha a conversa. ' + legenda + '</p></div>', 'WhatsApp', 'k1');
   try {
     const blob = await drawCard(spec.card);
     SHARE.file = new File([blob], spec.fileName, { type: 'image/png' }); SHARE.blob = blob;
     const box = $('#share-prev'); if (box) box.innerHTML = '<img src="' + URL.createObjectURL(blob) + '" alt="Prévia da imagem que será enviada">';
-  } catch (e) { const box = $('#share-prev'); if (box) box.innerHTML = '<span class="share-wait">Não foi possível montar a imagem. Use Só o texto.</span>'; }
+  } catch (e) { const box = $('#share-prev'); if (box) box.innerHTML = '<span class="share-wait">Não foi possível montar a imagem.</span>'; }
 }
 function waOpen(text) {
   const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const u = (ios ? 'whatsapp://send?text=' : 'https://wa.me/?text=') + encodeURIComponent(text);
   if (ios) location.href = u; else window.open(u, '_blank', 'noopener');
 }
+/* Sem envio de arquivo (computador): salva a imagem e abre o WhatsApp com o link. */
 function shareFallback() {
   try { const url = URL.createObjectURL(SHARE.blob); const a = document.createElement('a'); a.href = url; a.download = SHARE.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000); } catch (e) {}
-  copyText(SHARE.text, 'Imagem salva e mensagem copiada. No WhatsApp, anexe a imagem e cole a mensagem.');
+  toast('Imagem salva. No WhatsApp, anexe a imagem na conversa.');
+  if (SHARE.link) setTimeout(() => waOpen(SHARE.link), 600);
 }
 
 
@@ -2580,9 +2581,8 @@ const GUIAS = [
         res: 'O convite leva o link e o código. Quem abre o link cai direto no grupo certo.',
         passos: [
           'Toque na engrenagem ' + _gvGear() + ' no topo, ao lado do <b>?</b>.',
-          'Toque em ' + _gvBt('Enviar convite (imagem)', 'chat', 'primary') + ' e escolha o WhatsApp: vai uma imagem com o código e o link.',
-          'Ou use ' + _gvBt('Copiar', 'copy') + ' ou ' + _gvBt('Convidar por e-mail', 'envelope') + '.',
-          'Para chamar alguém só para conhecer o app, use <b>Enviar o wirteilen para um amigo</b>, no fim da mesma tela.',
+          'Toque em ' + _gvBt('Enviar convite no WhatsApp', 'chat', 'primary') + ' e escolha a conversa: vai uma imagem com o código e, na legenda, o link do convite.',
+          'Para chamar alguém só para conhecer o app, use <b>Indicar o wirteilen no WhatsApp</b>, no fim da mesma tela.',
         ],
         fig: 'invite' },
       { ic: 'iphone', rot: 'iPhone', tt: 'Instalar o app na tela de início',
@@ -2675,7 +2675,7 @@ const GUIAS = [
         res: 'O código de convite e o link vão juntos no e-mail ou na mensagem.',
         passos: [
           'Em <b>Nome do grupo</b>, troque o nome e toque em ' + _gvBt('Salvar') + '.',
-          'Toque em ' + _gvBt('Enviar convite (imagem)', 'chat', 'primary') + ' para mandar no WhatsApp, ou ' + _gvBt('Convidar por e-mail', 'envelope') + '.',
+          'Toque em ' + _gvBt('Enviar convite no WhatsApp', 'chat', 'primary') + ' e escolha a conversa.',
         ] },
       { ic: 'userminus', rot: 'Pessoas', tt: 'Remover alguém do grupo',
         res: 'Quem sai continua nas despesas antigas como ex-membro, e as contas continuam fechando.',
@@ -2837,18 +2837,18 @@ const MAN_SECOES = [
     faz: 'Protege o app aberto neste iPhone com o Face ID (ou Touch ID).',
     uso: 'Ligue em Ajustes › Conta e segurança. O primeiro acesso é sempre com e-mail e senha.',
     det: 'O Face ID fica no aparelho: o app nunca recebe a imagem do rosto. Em outro aparelho, ligue de novo.' },
-  { id: 'convites', ic: 'envelope', t: 'Convites por e-mail', s: 'Para o grupo ou para o app.',
-    faz: 'Abre o app de e-mail com a mensagem pronta: link, código do grupo e como instalar no iPhone.',
-    uso: 'Na engrenagem do topo: <b>Enviar convite (imagem)</b>, <b>Convidar por e-mail</b> ou <b>Enviar o wirteilen para um amigo</b>.',
-    det: 'O e-mail sai da sua conta, pelo app de e-mail do iPhone. Sem app de e-mail configurado, use Copiar ou Outros apps.' },
+  { id: 'convites', ic: 'chat', t: 'Convites no WhatsApp', s: 'Para o grupo ou para o app.',
+    faz: 'Manda uma imagem com o visual do app: o código do grupo e os passos para entrar, ou o que o app faz e como instalar.',
+    uso: 'Na engrenagem do topo: <b>Enviar convite no WhatsApp</b> ou <b>Indicar o wirteilen no WhatsApp</b>.',
+    det: 'A imagem vai com uma legenda só com o link, que fica clicável no WhatsApp. Quem toca no link do convite entra direto no grupo depois de criar a conta.' },
   { id: 'excel', ic: 'table', t: 'Planilha Excel', s: 'Histórico do grupo em abas.',
     faz: 'Gera um arquivo .xlsx com as abas Resumo, Despesas, Partes e Pagamentos, com cabeçalho, filtros, datas, moeda em R$ e totais.',
     uso: 'Na aba Backup, toque em <b>Excel (.xlsx)</b>. No iPhone, salve em Arquivos ou abra no Excel.',
     det: 'A aba Partes tem uma linha por pessoa em cada despesa: é a melhor para montar tabela dinâmica por pessoa, mês ou categoria.' },
-  { id: 'imagem', ic: 'chat', t: 'Enviar como imagem', s: 'Despesa, convite e Pix no WhatsApp.',
+  { id: 'imagem', ic: 'chat', t: 'Enviar no WhatsApp', s: 'Despesa, convite e Pix como imagem.',
     faz: 'Monta uma imagem com o visual do app: a despesa com a divisão, o convite com o código ou a cobrança Pix com o QR Code.',
-    uso: 'Toque em <b>Enviar no WhatsApp</b> e escolha WhatsApp na lista de apps do iPhone. A mensagem em texto vai junto.',
-    det: 'Se o aparelho não aceitar enviar a imagem direto, o app salva a imagem e copia a mensagem para você anexar no WhatsApp.' },
+    uso: 'Toque em <b>Enviar no WhatsApp</b>, escolha WhatsApp na lista do iPhone e a conversa.',
+    det: 'A imagem não leva texto junto: na legenda vai só o link do app ou do convite (clicável no WhatsApp). Na cobrança Pix, a legenda é o Pix copia e cola, para copiar com um toque.' },
   { id: 'conta-email', ic: 'envelope', t: 'Trocar e-mail ou senha', s: 'Ajustes › Conta e acesso.',
     faz: 'Troca o e-mail de entrada ou a senha da conta.',
     uso: 'Toque em <b>Trocar</b> na linha do e-mail ou da senha. O app pede a senha atual para confirmar que é você.',
@@ -2864,7 +2864,7 @@ const MAN_SECOES = [
   { id: 'versao', ic: 'info', t: 'Versão', s: 'wirteilen v' + APP_VERSION + '.',
     faz: 'A versão aparece na tela de entrada e no fim de Ajustes.',
     uso: 'Ao relatar um problema, diga a versão.',
-    det: 'A 0.7 deixa o selo de em dia verde e troca a planilha .csv por um Excel formatado. A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
+    det: 'A 0.8 deixa os envios só pelo WhatsApp, como imagem com o link na legenda. A 0.7 deixa o selo de em dia verde e troca a planilha .csv por um Excel formatado. A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
   { id: 'divisao', ic: 'person2', t: 'Modos de divisão', s: 'Igual, Valores e Partes.',
     faz: 'Define quanto da despesa cabe a cada pessoa.',
     uso: '<b>Igual</b> divide entre os marcados. <b>Valores</b> recebe o valor exato de cada um. <b>Partes</b> divide por peso (2 partes pagam o dobro de 1).',
@@ -3178,7 +3178,7 @@ function openExpenseView(e) {
     (e.serie ? '<div><span>Repetição</span><b>' + e.serie.k + ' de ' + e.serie.n + ' (' + (e.serie.freq === 'semanal' ? 'toda semana' : 'todo mês') + ')</b></div>' : '') + '</div>' +
     '<h3 class="h3">Divisão (' + esc(({ igual: 'igual', valores: 'por valores', partes: 'por partes' })[e.modo] || 'igual') + ')</h3>' +
     '<div class="ro-list">' + ids.map(u => '<div>' + person(u, 24) + '<b>' + brl(e.divisao[u]) + '</b></div>').join('') + '</div>' +
-    roLock(e, 'lançou') + '<div class="btns" style="margin-bottom:10px"><button class="btn ghost" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('share') + 'Enviar como imagem</button></div>' +
+    roLock(e, 'lançou') + '<div class="btns" style="margin-bottom:10px"><button class="btn wa" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('chat') + 'Enviar no WhatsApp</button></div>' +
     '<p class="hint">Lançada por ' + esc(who(autor(e))) + (e.criadoEm ? ' em ' + fmtDateTime(e.criadoEm) : '') + (e.atualizadoEm && e.atualizadoEm !== e.criadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '.</p>', 'Despesa', 'k1');
 }
 function openPaymentView(p) {
@@ -3221,7 +3221,7 @@ function openExpense(id) {
     '<div id="ex-split" class="split"></div><p id="ex-status" class="split-status" aria-live="polite"></p></div>' +
     repF + avisarF +
     '<div class="sheet-actions"><button class="btn">' + (e ? 'Salvar alterações' : 'Lançar despesa') + '</button>' +
-    (e ? '<button type="button" class="btn ghost" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('share') + 'Enviar como imagem</button>' : '') +
+    (e ? '<button type="button" class="btn ghost" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('chat') + 'Enviar no WhatsApp</button>' : '') +
     (e ? '<button type="button" class="btn danger" data-a="del-exp" data-id="' + esc(e.id) + '">' + ico('trash') + 'Excluir despesa</button><p class="hint">Lançada por ' + esc(who(e.criadoPor || e.pagador)) + (e.atualizadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '</p>' : '') +
     '</div></form>', 'Despesa', 'k1');
   renderSplit();
@@ -3314,7 +3314,7 @@ function openPix(de, para, valor) {
       '<div class="btns"><button class="btn" data-a="copy" data-text="' + esc(payload) + '" data-ok="Código Pix copiado. Cole no app do banco.">' + ico('copy') + 'Copiar código Pix</button></div>' +
       '<div class="kv" style="margin-top:16px"><span>Chave (' + esc(tipo) + ') · ' + esc(m.pixNome || nome) + '</span><b class="mono">' + esc(m.pixChave) + '</b></div>' +
       '<div class="btns"><button class="btn ghost" data-a="copy" data-text="' + esc(normKey(m.pixTipo, m.pixChave)) + '" data-ok="Chave copiada">' + ico('key') + 'Copiar só a chave</button>' +
-      '<button class="btn wa" data-a="share-pix" data-de="' + esc(de) + '" data-para="' + esc(para) + '" data-v="' + valor + '">' + ico('chat') + (para === me() ? 'Cobrar no WhatsApp (imagem com QR)' : 'Enviar o Pix como imagem') + '</button></div>' +
+      '<button class="btn wa" data-a="share-pix" data-de="' + esc(de) + '" data-para="' + esc(para) + '" data-v="' + valor + '">' + ico('chat') + (para === me() ? 'Cobrar no WhatsApp' : 'Enviar o Pix no WhatsApp') + '</button></div>' +
       '<p class="hint">No app do banco, escolha Pix, depois Pix copia e cola, e cole o código. O valor de ' + brl(valor) + ' já vem preenchido. Confira o nome do recebedor antes de confirmar.</p>';
   }
   openSheet(sheetHead(para === me() ? 'Seu Pix' : 'Pix para ' + firstName(para)) +
@@ -3329,16 +3329,6 @@ function notifyText(d, n, desc, freq) {
 }
 function openNotify(d, n, desc, freq) {
   return openShareCard('despesa', { d, n, desc, freq }, 'Despesa lançada. Quem está no grupo vê em <b>Novidades</b> ao abrir o app. Mande também a imagem no WhatsApp.');
-}
-function openNotifyTexto(d, n, desc, freq) {
-  const txt = notifyText(d, n, desc, freq);
-  openSheet(sheetHead('Avisar o grupo') +
-    '<p class="lead">Despesa lançada. Quem está no grupo vê o aviso em Novidades ao abrir o wirteilen. Quer mandar também por mensagem?</p>' +
-    '<div class="payload" style="white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere;font-family:var(--font);font-size:14px;max-height:none">' + esc(txt) + '</div>' +
-    '<div class="sheet-actions"><a class="btn" href="https://wa.me/?text=' + encodeURIComponent(txt) + '" target="_blank" rel="noopener">' + ico('chat') + 'Mandar no WhatsApp</a>' +
-    '<button class="btn ghost" data-a="share-text" data-text="' + esc(txt) + '">' + ico('share') + 'Outros apps</button>' +
-    '<button class="btn plain" data-a="copy" data-text="' + esc(txt) + '" data-ok="Mensagem copiada">' + ico('copy') + 'Copiar mensagem</button>' +
-    '<p class="hint">Aviso instantâneo no celular (notificação) exige um servidor, que o plano gratuito do Firebase não tem. Por isso o aviso fica no app e na sua mensagem.</p></div>', 'Avisar', 'k1');
 }
 const AV_ICONS = ['paw', 'star', 'sun', 'moon', 'leaf', 'bolt', 'heart', 'music', 'ball', 'car', 'airplane', 'coffee', 'gamepad', 'camera', 'flame', 'crown'];
 const AV = { ic: 'star', k: 3 };
@@ -3460,15 +3450,14 @@ function openGroupManage() {
   openSheet(sheetHead('Grupo') +
     '<div class="gm-hero"><span class="stack">' + memberIds().slice(0, 5).map(u => markOf(u, 34)).join('') + '</span><span style="min-width:0"><b>' + esc(g.nome) + '</b><small>' + memberIds().length + ' ' + plural(memberIds().length, 'pessoa', 'pessoas') + ' · ' + (dono ? 'você criou o grupo' : 'criado por ' + esc(who(g.dono, true))) + '</small></span></div>' +
     '<h3 class="h3" style="margin-top:0">Convidar para o grupo</h3>' +
-    '<div class="invite"><span class="eyebrow">Código de convite</span><span></span><span class="code-big">' + esc(g.codigo) + '</span><button class="btn sm" data-a="copy" data-text="' + esc(inviteText()) + '" data-ok="Convite copiado">' + ico('copy') + 'Copiar</button></div>' +
-    '<div class="btns" style="margin-bottom:6px"><button class="btn wa" data-a="share-convite">' + ico('chat') + 'Enviar convite (imagem)</button>' +
-    '<a class="btn ghost" href="' + esc(mailtoGroup()) + '">' + ico('envelope') + 'Convidar por e-mail</a></div>' +
+    '<div class="invite"><span class="eyebrow">Código de convite</span><span></span><span class="code-big">' + esc(g.codigo) + '</span><button class="btn sm ghost" data-a="copy" data-text="' + esc(g.codigo) + '" data-ok="Código copiado">' + ico('copy') + 'Copiar código</button></div>' +
+    '<div class="btns" style="margin-bottom:6px"><button class="btn wa" data-a="share-convite">' + ico('chat') + 'Enviar convite no WhatsApp</button></div>' +
     '<p class="hint">Qualquer pessoa do grupo pode convidar.</p>' +
     '<h3 class="h3">Pessoas (' + memberIds().length + ')</h3>' + rows +
     (dono ? '<p class="hint">Só quem criou o grupo remove pessoas. Quem sai continua no histórico como ex-membro.</p>' : '<p class="hint">Só quem criou o grupo (' + esc(nameOf(g.dono)) + ') remove pessoas e muda o nome e as categorias.</p>') +
     (dono ? '<h3 class="h3">Nome do grupo</h3><form data-f="rename" class="inline-form" style="margin-bottom:6px"><label class="fld"><span class="sr">Nome do grupo</span><input id="gr-nome" name="nome" required maxlength="40" value="' + esc(g.nome) + '" aria-label="Nome do grupo"></label><button class="btn ghost">Salvar</button></form>' : '') +
     '<h3 class="h3">Categorias do grupo</h3><div id="gm-cats">' + gmCatsHtml() + '</div>' +
-    '<h3 class="h3">Indicar o app</h3><button class="btn ghost" data-a="share-app">' + ico('iphone') + 'Enviar o wirteilen para um amigo</button>' +
+    '<h3 class="h3">Indicar o app</h3><button class="btn wa" data-a="share-app">' + ico('chat') + 'Indicar o wirteilen no WhatsApp</button>' +
     '<div class="danger-zone">' + (dono ? '<button class="btn danger" data-a="gm-del-open">' + ico('trash') + 'Excluir grupo</button><p class="hint">Antes de apagar, o app oferece o histórico completo em Excel.</p>'
       : '<button class="btn danger" data-a="gm-leave">' + ico('door') + 'Sair do grupo</button>') + '</div>', 'Grupo', 'k5');
 }
@@ -3720,10 +3709,10 @@ const ACTIONS = {
   'share-card'() {
     if (!SHARE.file) return toast('A imagem ainda está sendo montada. Um instante.');
     const f = SHARE.file;
-    if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], text: SHARE.text, title: SHARE.title }).catch(e => { if (!e || e.name !== 'AbortError') shareFallback(); }); return; }
+    const d = { files: [f] }; if (SHARE.link) d.text = SHARE.link;
+    if (navigator.canShare && navigator.canShare(d)) { navigator.share(d).catch(e => { if (!e || e.name !== 'AbortError') shareFallback(); }); return; }
     shareFallback();
   },
-  'share-wa-text'() { waOpen(SHARE.text); },
   'share-app'() { openShareCard('app'); },
   'share-convite'() { openShareCard('convite'); },
   'share-exp'(t) { const e = S.expenses.find(x => x.id === t.dataset.id); if (e) openShareCard('despesa', { d: e, n: 1, desc: e.descricao, freq: 'nao' }); },
