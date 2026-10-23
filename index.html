@@ -865,6 +865,61 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 @keyframes authIn{from{opacity:0;transform:translateY(10px)}}
 .lock .lock-me{margin:0 0 18px}
 @media (prefers-reduced-motion: reduce){.auth-logo .ring,.auth-logo .sg,.auth-logo .dot,.aurora i,.auth-card{animation:none}.auth-logo .sg{opacity:1}}
+
+/* ── v0.6: seis abas, engrenagem do grupo, backup, imagens ── */
+.tabs-in{grid-template-columns:repeat(6,minmax(0,1fr))}
+.tab{font-size:10px;padding:7px 0 5px;min-width:0}
+.tab span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tab .ic{width:24px;height:24px}
+.frame[data-tab="backup"]{--c:var(--k11)}
+.tab[data-t="backup"][aria-current="page"]{color:var(--k11)}
+.hbtn.gear{border:0;background:var(--fill);color:var(--ink);display:grid;place-items:center}
+.hbtn.gear .ic{width:22px;height:22px;stroke-width:1.7}
+.pp{list-style:none;margin:0;padding:0;display:grid}
+.pp li{padding:12px 0;border-top:.5px solid var(--sep)}
+.pp li:first-child{border-top:0;padding-top:4px}
+.pp-k{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.pp-k span{display:grid;gap:1px;min-width:0;padding:8px 10px;border-radius:12px;background:var(--bg)}
+.pp-k small{font-size:11px;color:var(--muted);font-weight:500}
+.pp-k b{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.pp-k b.pos{color:var(--pos)} .pp-k b.neg{color:var(--neg)}
+.share-prev{display:grid;place-items:center;min-height:220px;margin:2px 0 14px;border-radius:18px;background:var(--fill);overflow:hidden}
+.share-prev img{display:block;width:100%;height:auto;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.share-wait{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
+.btn.wa{background:#1FA855;color:#fff}
+.gm-hero{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:14px;border-radius:18px;background:linear-gradient(140deg,var(--k5),color-mix(in srgb,var(--k5) 64%,#0B1A2B));color:#fff}
+.gm-hero b{display:block;font-size:19px;letter-spacing:-.02em}
+.gm-hero small{display:block;font-size:13px;color:rgba(255,255,255,.82)}
+.gm-hero .stack .mark{box-shadow:0 0 0 2px rgba(255,255,255,.7)}
+.ios-list{background:var(--bg);border-radius:14px;margin:0 0 12px;overflow:hidden}
+.ios-li{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 6px 0 14px;border-top:.5px solid var(--sep)}
+.ios-li:first-child{border-top:0}
+.ios-li>span{flex:none;width:72px;font-size:14px;color:var(--muted)}
+.ios-li>b{flex:1;min-width:0;font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ios-li .btn{width:auto;min-height:34px;padding:0 14px;font-size:13.5px}
+.bk-log{list-style:none;margin:0;padding:0}
+.bk-log li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:.5px solid var(--sep);font-size:14px}
+.bk-log li:first-child{border-top:0}
+.bk-log .ic{flex:none;width:18px;height:18px;margin-top:2px;color:var(--c,var(--accent))}
+.bk-log small{display:block;color:var(--muted);font-size:12.5px}
+.tour-chips{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
+.top{gap:8px}
+.top-r{gap:6px}
+.top .hbtn{width:36px;height:36px}
+.top .hbtn .ic{width:20px;height:20px}
+.top .hbtn.help{font-size:16px}
+.gname{font-size:clamp(20px,6vw,28px);gap:6px}
+.gname .ic{width:20px;height:20px;padding:3px}
+.pp-k{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pp-k b{font-size:14.5px;white-space:nowrap;overflow-wrap:normal}
+.pp-h{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.pp-h .person{min-width:0}
+.pp-d{display:grid;justify-items:end;flex:none}
+.pp-d small{font-size:11px;color:var(--muted);font-weight:500}
+.pp-d b{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pp-d b.pos{color:var(--pos)} .pp-d b.neg{color:var(--neg)}
+@media (max-width:359px){.hero-kpis b{font-size:13px}.hero-kpis span{font-size:11px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
 <body>
@@ -908,7 +963,7 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 const CFG = window.FIREBASE_CONFIG || {};
 const HAS_FB = !!(CFG.apiKey && CFG.projectId);
 const FB_VERSION = '10.12.2';
-const APP_VERSION = '0.5';
+const APP_VERSION = '0.6';
 /* Logo: anel em três partes (três amigos) + ponto central (a conta). */
 const LOGO_SEG = ['M90.79 18.10A40 40 0 0 1 123.95 75.53', 'M121.16 80.37A40 40 0 0 1 54.84 80.37', 'M52.05 75.53A40 40 0 0 1 85.21 18.10'];
 const logoMini = spin => '<svg class="logo-mini' + (spin ? ' spin' : '') + '" viewBox="36 6 104 104" aria-hidden="true"><g>' + LOGO_SEG.map((d, i) => '<path class="q' + (i + 1) + '" d="' + d + '"/>').join('') + '</g><circle cx="88" cy="58" r="10"/></svg>';
@@ -1056,9 +1111,12 @@ const TAB_IC = {
   resumo: {
     o: '<rect x="4" y="12" width="4" height="8" rx="1.3"/><rect x="10" y="4.5" width="4" height="15.5" rx="1.3"/><rect x="16" y="8.5" width="4" height="11.5" rx="1.3"/>',
     f: '<rect class="f" x="3.6" y="11.6" width="4.8" height="8.8" rx="1.5"/><rect class="f" x="9.6" y="4.1" width="4.8" height="16.3" rx="1.5"/><rect class="f" x="15.6" y="8.1" width="4.8" height="12.3" rx="1.5"/>' },
+  backup: {
+    o: '<rect x="3.5" y="4" width="17" height="5" rx="1.6"/><path d="M5 9v9.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V9M10 13h4"/>',
+    f: '<rect class="f" x="3.5" y="4" width="17" height="5" rx="1.6"/><path class="f" d="M5 9.8h14v8.7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18.5Z"/><path class="cut" d="M10 13.5h4"/>' },
   ajustes: {
-    o: '<path d="' + GEAR + '"/><circle cx="12" cy="12" r="3.1"/>',
-    f: '<path class="f" d="' + GEAR + '"/><circle class="hole" cx="12" cy="12" r="3.1"/>' },
+    o: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3.2"/><path d="M6.4 18.3a6.4 6.4 0 0 1 11.2 0"/>',
+    f: '<circle class="f" cx="12" cy="12" r="9.5"/><circle class="cut" cx="12" cy="10" r="3.2"/><path class="cut" d="M6.4 18.3a6.4 6.4 0 0 1 11.2 0"/>' },
   manual: {
     o: IP.book,
     f: '<path class="f" d="M12 6.6C10.2 5.3 7.7 4.6 4.5 4.6H4v13.2h.5c3.2 0 5.7.7 7.5 2 1.8-1.3 4.3-2 7.5-2h.5V4.6h-.5c-3.2 0-5.7.7-7.5 2Z"/><path class="cut" d="M12 7v12.6"/>' },
@@ -1067,7 +1125,7 @@ function ico(n, cls) { return '<svg class="ic' + (cls ? ' ' + cls : '') + '" vie
 function tabIcon(id) { return '<svg class="ic ic-o" viewBox="0 0 24 24" aria-hidden="true">' + TAB_IC[id].o + '</svg><svg class="ic ic-f" viewBox="0 0 24 24" aria-hidden="true">' + TAB_IC[id].f + '</svg>'; }
 const TABS = [
   { id: 'despesas', nome: 'Despesas' }, { id: 'saldos', nome: 'Saldos' },
-  { id: 'resumo', nome: 'Resumo' }, { id: 'ajustes', nome: 'Ajustes' }, { id: 'manual', nome: 'Manual' },
+  { id: 'resumo', nome: 'Resumo' }, { id: 'backup', nome: 'Backup' }, { id: 'ajustes', nome: 'Ajustes' }, { id: 'manual', nome: 'Manual' },
 ];
 const ARROW = ico('arrowRight', 'arrow');
 
@@ -1232,6 +1290,9 @@ const FB = {
     await b.commit();
   },
   leaveGroup(gid, uid, nome) { return this.removeMember(gid, uid, nome); },
+  async reauth(senha) { const u = this.auth.currentUser; await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email, senha)); return u; },
+  async changeEmail(senha, novo) { const u = await this.reauth(senha); await u.verifyBeforeUpdateEmail(novo); },
+  async changePassword(atual, nova) { const u = await this.reauth(atual); await u.updatePassword(nova); },
   async deleteAccount(u, senha, groups, nome) {
     if (!navigator.onLine) throw new Error('Excluir a conta precisa de internet.');
     const user = this.auth.currentUser;
@@ -1409,6 +1470,8 @@ const Demo = {
   async removeMember(gid, uid, nome) { const g = this.db.grupos[gid]; g.membros = g.membros.filter(u => u !== uid); g.exMembros = Object.assign(g.exMembros || {}, { [uid]: nome }); this.persist(); },
   leaveGroup(gid, uid, nome) { return this.removeMember(gid, uid, nome); },
   async deleteGroup(gid) { delete this.db.grupos[gid]; this.persist(); },
+  async changeEmail(senha, novo) { const u = this.db.usuarios[this.db.sessao]; if (Object.values(this.db.usuarios).some(x => x.email === novo)) throw { code: 'auth/email-already-in-use' }; u.email = novo; this.persist(); },
+  async changePassword() {},
   async deleteAccount(u, senha, groups, nome) {
     groups.forEach(x => { const g = this.db.grupos[x.id]; if (!g) return; const outros = g.membros.filter(m => m !== u);
       if (g.dono === u && !outros.length) { delete this.db.grupos[x.id]; return; }
@@ -1446,7 +1509,7 @@ const Demo = {
 /* ================= Tour guiado =================
    Destaca um recurso por vez e explica para que serve. Fecha a qualquer momento:
    ×, Pular, tecla Esc. Setas do teclado avançam e voltam. Tocar fora avança. */
-const TOUR_TABS = { despesas: 'k1', saldos: 'k3', resumo: 'k4', ajustes: 'k5', manual: 'k6' };
+const TOUR_TABS = { despesas: 'k1', saldos: 'k3', resumo: 'k4', backup: 'k11', ajustes: 'k5', manual: 'k6' };
 const TOURS = {
   despesas: [
     { sel: '#grp-btn', t: 'O grupo aberto', x: 'Cada grupo tem as próprias contas: uma viagem, a casa, um evento. Toque no nome para <b>trocar de grupo</b>, criar outro ou entrar com um código.' },
@@ -1461,7 +1524,8 @@ const TOURS = {
     { sheet: 'exp', sel: 'input[name="rep"]', up: 3, t: 'Repetir em parcelas', x: 'Para conta que se repete (aluguel, mensalidade, parcelas do cartão): escolha <b>Toda semana</b> ou <b>Todo mês</b> e quantas vezes. O app lança cada uma na data certa.' },
     { sheet: 'exp', sel: '#ex-avisar', up: 1, t: 'Avisar o grupo', x: 'Ligado, os amigos veem a despesa em <b>Novidades</b> ao abrir o app, e você pode mandar a mensagem pronta no WhatsApp.' },
     { sel: '#view .list', t: 'Histórico do grupo', x: 'Despesas e pagamentos por mês, do mais novo para o mais antigo. Toque para ver os detalhes. Só quem lançou <b>edita ou exclui</b>; os lançamentos dos outros aparecem com um cadeado.' },
-    { sel: '.tabs', t: 'As abas', x: '<b>Saldos</b> mostra quem paga quem e o Pix. <b>Resumo</b> mostra para onde foi o dinheiro. <b>Ajustes</b> tem perfil, grupo e backup. <b>Manual</b> tem o passo a passo.' },
+    { sel: '.tabs', t: 'As abas', x: '<b>Saldos</b>: quem paga quem e o Pix. <b>Resumo</b>: para onde foi o dinheiro. <b>Backup</b>: salvar e restaurar. <b>Ajustes</b>: sua conta e seu Pix. <b>Manual</b>: o passo a passo.' },
+    { sel: '#gear', t: 'O grupo na engrenagem', x: 'A engrenagem abre o grupo: <b>enviar o convite</b> como imagem (qualquer pessoa) e, para quem criou, <b>remover pessoas</b>, mudar o nome e as categorias.' },
     { sel: '#help', t: 'Tour quando quiser', x: 'O <b>?</b> repete o tour da tela em que você estiver.' },
   ],
   saldos: [
@@ -1478,15 +1542,19 @@ const TOURS = {
     { sel: '#view .cbar', t: 'Por categoria', x: 'Cada categoria na sua cor, do maior gasto para o menor, com o percentual do total.' },
     { sel: '#view .tbl', t: 'Por pessoa', x: 'Quanto cada um pagou e consumiu no período. A diferença aqui não conta os pagamentos de acerto: para saber quem deve, use <b>Saldos</b>.' },
   ],
+  backup: [
+    { sel: '#view .hero', t: 'Backups do grupo', x: 'Quantas despesas e pagamentos o grupo tem e quando foi a última cópia automática neste aparelho.' },
+    { sel: '#sec-exportar', t: 'Salvar um backup', x: '<b>.json</b> para restaurar depois; <b>.csv</b> para abrir no Excel. No iPhone, salve em Arquivos ou no Google Drive.' },
+    { sel: '#sec-restaurar', t: 'Ler e restaurar', x: 'Qualquer pessoa lê um backup para conferir. Restaurar é só de quem criou o grupo, porque o backup traz os lançamentos de todos.' },
+    { sel: '#sec-copias', t: 'Cópias automáticas', x: 'O app guarda até 8 versões do grupo neste aparelho, sozinho, sempre que os dados mudam.' },
+    { sel: '#sec-historico', t: 'Salvos e lidos', x: 'O registro do que foi exportado, lido e restaurado neste aparelho.' },
+  ],
   ajustes: [
-    { sel: '#view .me-av', t: 'Sua foto', x: 'Toque para escolher uma <b>foto do iPhone</b> ou um <b>ícone</b> com cor. Ela aparece pequena ao lado do seu nome para todo o grupo.' },
+    { sel: '#view .me-av', t: 'Sua foto', x: 'Toque para escolher uma <b>foto do iPhone</b> (e enquadrar no círculo) ou um <b>ícone</b> com cor.' },
     { sel: '#sec-perfil', t: 'Perfil e Pix', x: 'Cadastre a sua <b>chave Pix</b>. Quem te deve recebe o código pronto, com o valor certo.' },
-    { sel: '#sec-grupo', t: 'Convite do grupo', x: 'O código de 6 letras leva os amigos para dentro do grupo. <b>Copiar convite</b> para o WhatsApp ou <b>Convidar por e-mail</b>.' },
-    { sel: '#view [data-a="manage-group"]', t: 'Gerenciar grupo', x: 'Quem criou o grupo troca o nome, <b>remove pessoas</b>, cria <b>categorias</b> e pode <b>excluir o grupo</b>, com o histórico completo em .csv antes de apagar. Os outros podem sair do grupo.' },
-    { sel: '#sec-app', t: 'Convidar para o app', x: 'Manda o link do wirteilen com o passo a passo para instalar no iPhone.' },
-    { sel: '#sec-backup', t: 'Backup', x: 'Cópia completa do grupo em .json (para restaurar) ou .csv (para o Excel). O app também guarda cópias automáticas no aparelho.' },
+    { sel: '#sec-conta .ios-list', t: 'E-mail e senha', x: '<b>Trocar</b> o e-mail da conta (confirmado por um link no e-mail novo) ou a senha.' },
     { sel: '#faceid-sw', up: 1, t: 'Face ID', x: 'Ligado, o app abre com o seu rosto neste iPhone e pede de novo depois de 5 minutos fora do app.' },
-    { sel: '#view [data-a="del-account"]', t: 'Excluir a conta', x: 'Apaga o seu login e o seu perfil. Nos grupos que você criou, o grupo passa para outra pessoa; se só você estiver nele, ele é excluído.' },
+    { sel: '#view [data-a="del-account"]', t: 'Sair ou excluir a conta', x: '<b>Forçar sincronização</b> quando algo não subir, <b>Sair</b> deste aparelho ou <b>Excluir</b> a conta de vez.' },
   ],
   manual: [
     { sel: '#man-tours', t: 'Tours', x: 'Escolha uma tela para conhecer, ou faça o tour completo.' },
@@ -1498,7 +1566,7 @@ const TOURS = {
 let TR = null;
 function tourStart(tab, all) {
   tourEnd();
-  const tabs = all ? ['despesas', 'saldos', 'resumo', 'ajustes'] : [tab];
+  const tabs = all ? ['despesas', 'saldos', 'resumo', 'backup', 'ajustes'] : [tab];
   const P = []; tabs.forEach(t => (TOURS[t] || []).forEach(p => P.push(Object.assign({ tab: t }, p))));
   if (!P.length) return;
   tabs.forEach(t => LS.set('rateio.tour.' + t, true));
@@ -1586,6 +1654,210 @@ function tourEnd(done) {
   if (sh && $('#exp-form')) closeSheet();
   if (S.tab === 'despesas' || done) renderMain();
   if (done) toast('Tour concluído. O botão ? repete quando quiser.');
+}
+
+
+/* ================= Imagens para compartilhar =================
+   Despesa, convite do grupo, convite do app e cobrança Pix viram uma imagem com o visual
+   do app (PNG 1080 px de largura). No iPhone, o botão abre a folha de compartilhar com a
+   imagem e a mensagem; é só tocar em WhatsApp. */
+const IMG_K = { k1: '#2E8B57', k2: '#D2603F', k3: '#2F6FB7', k4: '#C98A1B', k5: '#7A4FA0', k6: '#1F8A8A', k7: '#C94F7C', k8: '#5B6B80', k9: '#7C8A2E', k10: '#8A5A3B', k11: '#4B5BC4', k12: '#C0392B' };
+const IMG_F = '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, "Helvetica Neue", sans-serif';
+const IMG_MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+const loadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+const svgImg = (inner, color) => loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96" fill="none" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>'));
+function mixHex(a, b, t) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), x = p(a), y = p(b); return 'rgb(' + x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(',') + ')'; }
+function rrect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function wrapText(ctx, text, maxW, maxLines) {
+  const words = String(text).split(/\s+/), lines = []; let cur = '';
+  words.forEach(w => { const t = cur ? cur + ' ' + w : w; if (ctx.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } });
+  if (cur) lines.push(cur);
+  if (maxLines && lines.length > maxLines) { const l = lines.slice(0, maxLines); let last = l[maxLines - 1]; while (ctx.measureText(last + '…').width > maxW && last.length) last = last.slice(0, -1); l[maxLines - 1] = last + '…'; return l; }
+  return lines;
+}
+function fitText(ctx, text, maxW, size, weight, min) { let f = size; do { ctx.font = weight + ' ' + f + 'px ' + IMG_F; if (ctx.measureText(text).width <= maxW) return text; f -= 2; } while (f > (min || 24)); let t = text; while (ctx.measureText(t + '…').width > maxW && t.length) t = t.slice(0, -1); return t + '…'; }
+function drawLogo(ctx, cx, cy, r, cols, dot, lw) {
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(r / 40, r / 40); ctx.translate(-88, -58);
+  ctx.lineWidth = lw || 16; ctx.lineCap = 'butt';
+  LOGO_SEG.forEach((d, i) => { ctx.strokeStyle = cols[i % cols.length]; ctx.stroke(new Path2D(d)); });
+  if (dot) { ctx.fillStyle = dot; ctx.beginPath(); ctx.arc(88, 58, 9, 0, Math.PI * 2); ctx.fill(); }
+  ctx.restore();
+}
+async function drawCard(o) {
+  try { await document.fonts.ready; } catch (e) {}
+  const tone = IMG_K[o.tone] || IMG_K.k1, A = {};
+  if (o.icon && IP[o.icon]) A.icon = await svgImg(IP[o.icon], '#FFFFFF').catch(() => null);
+  for (const p of (o.people || [])) if (p.foto) p.img = await loadImg(p.foto).catch(() => null);
+  if (o.qr) A.qr = await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(o.qr)).catch(() => null);
+  const W = 1080, M = 48, IN = 56, INK = '#1D1D1F', MUT = '#6E6E73', SEP = 'rgba(60,60,67,.14)';
+  const render = ctx => {
+    ctx.textBaseline = 'alphabetic';
+    // medir o cartão colorido
+    const hw = W - 2 * M, tw = hw - 2 * IN - (A.icon ? 140 : 0);
+    ctx.font = '700 64px ' + IMG_F; const tl = wrapText(ctx, o.title, hw - 2 * IN, 3);
+    ctx.font = '500 36px ' + IMG_F; const sl = o.sub ? wrapText(ctx, o.sub, hw - 2 * IN, 3) : [];
+    let hh = IN + 64 + 44 + 40 + tl.length * 76 + (o.big ? 132 : 0) + (sl.length ? 14 + sl.length * 48 : 0) + IN;
+    let y = M;
+    // fundo
+    ctx.fillStyle = '#F2F2F0'; ctx.fillRect(0, 0, W, ctx.canvas.height);
+    // cartão colorido
+    const g = ctx.createLinearGradient(M, y, M + hw, y + hh); g.addColorStop(0, tone); g.addColorStop(1, mixHex(tone, '#0B1A2B', .38));
+    ctx.save(); rrect(ctx, M, y, hw, hh, 52); ctx.fillStyle = g; ctx.shadowColor = 'rgba(0,0,0,.14)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 14; ctx.fill(); ctx.restore();
+    ctx.save(); rrect(ctx, M, y, hw, hh, 52); ctx.clip(); drawLogo(ctx, M + hw - 70, y + 90, 190, ['rgba(255,255,255,.16)'], 'rgba(255,255,255,.16)', 16); ctx.restore();
+    let cy = y + IN;
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(M + IN + 32, cy + 32, 32, 0, Math.PI * 2); ctx.fill();
+    drawLogo(ctx, M + IN + 32, cy + 32, 20, [IMG_K.k1, IMG_K.k2, IMG_K.k3], INK, 16);
+    ctx.fillStyle = '#fff'; ctx.font = '700 40px ' + IMG_F; ctx.fillText('wirteilen', M + IN + 84, cy + 46);
+    if (A.icon) { ctx.save(); rrect(ctx, M + hw - IN - 112, cy - 4, 112, 112, 32); ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fill(); ctx.restore(); ctx.drawImage(A.icon, M + hw - IN - 112 + 24, cy - 4 + 24, 64, 64); }
+    cy += 64 + 44 + 30;
+    ctx.fillStyle = 'rgba(255,255,255,.82)'; ctx.font = '600 30px ' + IMG_F; ctx.fillText(fitText(ctx, String(o.kicker || '').toUpperCase(), tw, 30, '600'), M + IN, cy);
+    cy += 10;
+    ctx.fillStyle = '#fff'; ctx.font = '700 64px ' + IMG_F; tl.forEach(l => { cy += 76; ctx.fillText(l, M + IN, cy); });
+    if (o.big) { cy += 126; ctx.font = '800 116px ' + IMG_F; ctx.fillText(fitText(ctx, o.big, hw - 2 * IN, 116, '800', 60), M + IN, cy); }
+    if (sl.length) { cy += 14; ctx.fillStyle = 'rgba(255,255,255,.88)'; ctx.font = '500 36px ' + IMG_F; sl.forEach(l => { cy += 48; ctx.fillText(l, M + IN, cy); }); }
+    y += hh + 36;
+    const label = t => { ctx.fillStyle = MUT; ctx.font = '600 28px ' + IMG_F; ctx.fillText(String(t).toUpperCase(), M + 24, y + 30); y += 52; };
+    const card = (h, fn) => { ctx.save(); rrect(ctx, M, y, hw, h, 40); ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.05)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 6; ctx.fill(); ctx.restore(); fn(y); y += h + 32; };
+    // linhas de informação
+    if (o.rows && o.rows.length) {
+      card(o.rows.length * 96, y0 => o.rows.forEach(([l, v], i) => {
+        const ry = y0 + i * 96;
+        if (i) { ctx.strokeStyle = SEP; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(M + 40, ry); ctx.lineTo(M + hw - 40, ry); ctx.stroke(); }
+        ctx.fillStyle = MUT; ctx.font = '500 32px ' + IMG_F; ctx.textAlign = 'left'; ctx.fillText(l, M + 40, ry + 59);
+        const lw = ctx.measureText(l).width;
+        const vv = fitText(ctx, String(v), hw - 120 - lw, 34, '600', 24); ctx.fillStyle = INK; ctx.textAlign = 'right'; ctx.fillText(vv, M + hw - 40, ry + 59); ctx.textAlign = 'left';
+      }));
+    }
+    // pessoas
+    if (o.people && o.people.length) {
+      if (o.peopleTitle) label(o.peopleTitle);
+      card(o.people.length * 100 + 16, y0 => o.people.forEach((p, i) => {
+        const ry = y0 + 8 + i * 100, cx = M + 40 + 34, cyy = ry + 50;
+        if (i) { ctx.strokeStyle = SEP; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(M + 128, ry); ctx.lineTo(M + hw - 40, ry); ctx.stroke(); }
+        ctx.save(); ctx.beginPath(); ctx.arc(cx, cyy, 34, 0, Math.PI * 2); ctx.closePath();
+        if (p.img) { ctx.clip(); ctx.drawImage(p.img, cx - 34, cyy - 34, 68, 68); }
+        else { ctx.fillStyle = mixHex(p.cor || tone, '#FFFFFF', .82); ctx.fill(); ctx.fillStyle = p.cor || tone; ctx.font = '700 30px ' + IMG_F; ctx.textAlign = 'center'; ctx.fillText(p.ini || '?', cx, cyy + 11); ctx.textAlign = 'left'; }
+        ctx.restore();
+        ctx.fillStyle = INK; ctx.font = '500 34px ' + IMG_F; ctx.fillText(fitText(ctx, p.nome, hw - 420, 34, '500'), M + 128, cyy + 12);
+        if (p.valor) { ctx.font = '700 34px ' + IMG_F; ctx.textAlign = 'right'; ctx.fillText(p.valor, M + hw - 40, cyy + 12); ctx.textAlign = 'left'; }
+      }));
+    }
+    // código de convite
+    if (o.code) {
+      label('Código do grupo');
+      const n = o.code.length, bw = 124, gap = 16, tot = n * bw + (n - 1) * gap; let x = (W - tot) / 2;
+      for (const ch of o.code) { ctx.save(); rrect(ctx, x, y, bw, 150, 28); ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.06)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6; ctx.fill(); ctx.restore();
+        ctx.fillStyle = tone; ctx.font = '700 84px ' + IMG_MONO; ctx.textAlign = 'center'; ctx.fillText(ch, x + bw / 2, y + 106); ctx.textAlign = 'left'; x += bw + gap; }
+      y += 150 + 36;
+    }
+    // listas numeradas
+    (o.lists || []).forEach(L => {
+      if (L.title) label(L.title);
+      ctx.font = '500 33px ' + IMG_F;
+      const lines = L.items.map(t => wrapText(ctx, t, hw - 180, 3));
+      const h = lines.reduce((a, l) => a + Math.max(96, 40 + l.length * 44), 0);
+      card(h, y0 => { let ry = y0; lines.forEach((l, i) => {
+        const rh = Math.max(96, 40 + l.length * 44);
+        if (i) { ctx.strokeStyle = SEP; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(M + 120, ry); ctx.lineTo(M + hw - 40, ry); ctx.stroke(); }
+        ctx.fillStyle = mixHex(tone, '#FFFFFF', .85); ctx.beginPath(); ctx.arc(M + 40 + 28, ry + rh / 2, 28, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = tone; ctx.font = '700 28px ' + IMG_F; ctx.textAlign = 'center'; ctx.fillText(L.check ? '✓' : String(i + 1), M + 68, ry + rh / 2 + 10); ctx.textAlign = 'left';
+        ctx.fillStyle = INK; ctx.font = '500 33px ' + IMG_F; const ty = ry + rh / 2 - (l.length - 1) * 22 + 11; l.forEach((t, k) => ctx.fillText(t, M + 120, ty + k * 44));
+        ry += rh; }); });
+    });
+    // QR Code do Pix
+    if (A.qr) {
+      ctx.font = '400 24px ' + IMG_MONO; const pl = o.payload ? wrapText(ctx, o.payload.replace(/(.{36})/g, '$1 '), hw - 120, 6) : [];
+      card(600 + pl.length * 34 + 30, y0 => { ctx.drawImage(A.qr, (W - 520) / 2, y0 + 40, 520, 520); ctx.fillStyle = MUT; ctx.font = '400 24px ' + IMG_MONO; ctx.textAlign = 'center'; pl.forEach((t, k) => ctx.fillText(t, W / 2, y0 + 600 + 20 + k * 34)); ctx.textAlign = 'left'; });
+    }
+    // rodapé
+    y += 6;
+    ctx.font = '700 30px ' + IMG_F; const bw2 = ctx.measureText('wirteilen').width; ctx.font = '500 28px ' + IMG_F;
+    const ft = o.foot ? '  ·  ' + o.foot : ''; const fw = Math.min(hw - 80, ctx.measureText(ft).width), tot2 = 44 + 14 + bw2 + fw; let fx = (W - tot2) / 2;
+    drawLogo(ctx, fx + 22, y + 20, 18, [IMG_K.k1, IMG_K.k2, IMG_K.k3], INK, 16); fx += 58;
+    ctx.fillStyle = INK; ctx.font = '700 30px ' + IMG_F; ctx.fillText('wirteilen', fx, y + 31); fx += bw2;
+    ctx.fillStyle = MUT; ctx.font = '500 28px ' + IMG_F; ctx.fillText(fitText(ctx, ft, hw - 80 - bw2, 28, '500'), fx, y + 31);
+    y += 44;
+    if (o.url) { ctx.fillStyle = MUT; ctx.font = '500 26px ' + IMG_F; ctx.textAlign = 'center'; ctx.fillText(fitText(ctx, o.url, hw - 40, 26, '500', 18), W / 2, y + 30); ctx.textAlign = 'left'; y += 44; }
+    return y + M;
+  };
+  const c0 = document.createElement('canvas'); c0.width = W; c0.height = 3600; const H = Math.ceil(render(c0.getContext('2d')));
+  const c = document.createElement('canvas'); c.width = W; c.height = H; render(c.getContext('2d'));
+  return await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error('Não foi possível montar a imagem.')), 'image/png'));
+}
+const imgPerson = u => { const m = memberInfo(u), ids = memberIds(); let i = ids.indexOf(u); if (i < 0) i = 8; const nome = u === me() ? (S.profile.nome || 'Você') : nameOf(u);
+  return { nome, foto: m.foto || '', ini: (nome.trim()[0] || '?').toUpperCase(), cor: IMG_K['k' + ((i % 8) + 1)] }; };
+const CARDS = {
+  despesa({ d, n, desc, freq }) {
+    const g = group(), cat = catOf(d.categoria), pes = Object.entries(d.divisao || {}).filter(([, v]) => v > 0).sort((a, z) => z[1] - a[1]);
+    const meuNome = (S.profile.nome || '').split(' ')[0] || 'Alguém', quem = autor(d) === me() ? meuNome : firstName(autor(d));
+    const people = pes.slice(0, 8).map(([u, v]) => Object.assign(imgPerson(u), { valor: brl(v) }));
+    if (pes.length > 8) people.push({ nome: '+ ' + (pes.length - 8) + ' pessoas', ini: '+', valor: brl(sum(pes.slice(8), x => x[1])) });
+    const dataTxt = n > 1 ? fmtDate(d.data) + ' a ' + fmtDate(addPeriod(d.data, freq, n - 1)) : fmtDate(d.data);
+    return {
+      sheetTitle: 'Enviar despesa', fileName: 'wirteilen-despesa.png', title: 'Despesa no wirteilen', text: notifyText(d, n, desc, freq),
+      card: { tone: 'k1', icon: cat.ic, kicker: 'Nova despesa · ' + g.nome, title: desc, big: brl(d.valor),
+        sub: n > 1 ? n + ' vezes, ' + (freq === 'semanal' ? 'toda semana' : 'todo mês') + ' · total ' + brl(d.valor * n) : cat.nome,
+        rows: [['Pago por', imgPerson(d.pagador).nome], ['Data', dataTxt], ['Categoria', cat.nome], ['Lançado por', quem]],
+        peopleTitle: 'Divisão ' + (({ igual: 'igual', valores: 'por valores', partes: 'por partes' })[d.modo] || 'igual') + ' · ' + pes.length + ' ' + plural(pes.length, 'pessoa', 'pessoas'),
+        people, foot: 'Veja o seu saldo e pague com Pix no app', url: appUrl() },
+    };
+  },
+  convite() {
+    const g = group(), url = appUrl(), meuNome = S.profile.nome || '';
+    return {
+      sheetTitle: 'Enviar convite do grupo', fileName: 'wirteilen-convite.png', title: 'Convite para o grupo ' + g.nome, text: groupInviteBody(), mail: mailtoGroup(),
+      card: { tone: 'k5', icon: 'person2', kicker: 'Convite', title: 'Entre no grupo ' + g.nome, sub: memberIds().length + ' ' + plural(memberIds().length, 'pessoa já está', 'pessoas já estão') + ' dividindo as despesas por aqui.',
+        rows: [['Convite de', meuNome || 'um amigo'], ['Pessoas no grupo', String(memberIds().length)]],
+        code: g.codigo,
+        lists: [{ title: 'Como entrar', items: [url ? 'Abra o link do app no Safari do iPhone' : 'Abra o wirteilen no Safari do iPhone', 'Crie sua conta com e-mail e senha', url ? 'Você entra direto no grupo. Se pedir, digite o código' : 'Toque em Entrar com código e digite o código'] }],
+        foot: 'Despesas divididas entre amigos', url: url ? url + '?convite=' + g.codigo : '' },
+    };
+  },
+  app() {
+    const url = appUrl();
+    return {
+      sheetTitle: 'Indicar o wirteilen', fileName: 'wirteilen.png', title: 'Conheça o wirteilen', text: appInviteText(), mail: mailtoApp(),
+      card: { tone: 'k3', icon: 'iphone', kicker: 'Convite', title: 'Conheça o wirteilen', sub: 'Despesas divididas entre amigos, sem planilha e sem conta de cabeça.',
+        lists: [{ title: 'O que ele faz', check: true, items: ['Cada um lança os gastos pelo celular', 'O saldo de todos fecha sozinho', 'O Pix já sai com o valor certo'] },
+                { title: 'Para instalar no iPhone', items: ['Abra o link no Safari', 'Toque em Compartilhar', 'Toque em Adicionar à Tela de Início'] }],
+        foot: 'Grátis, no navegador', url },
+    };
+  },
+  pix({ de, para, valor, payload, chave, tipo, recebedor }) {
+    const g = group(), np = imgPerson(para).nome, nd = imgPerson(de).nome;
+    return {
+      sheetTitle: 'Enviar cobrança Pix', fileName: 'wirteilen-pix.png', title: 'Pix de ' + brl(valor),
+      text: 'Pix de ' + brl(valor) + ' para ' + np + ' (grupo ' + g.nome + '). No app do banco, use Pix › Pix copia e cola e cole este código:\n' + payload,
+      card: { tone: 'k6', icon: 'qrcode', kicker: 'Pix · ' + g.nome, title: nd.split(' ')[0] + ' paga ' + np.split(' ')[0], big: brl(valor), sub: 'Escaneie o QR Code ou use o Pix copia e cola. O valor já vem preenchido.',
+        rows: [['Recebedor', recebedor], ['Chave (' + tipo + ')', chave]], qr: qrSvg(payload), payload, foot: 'Depois de pagar, registre no app' },
+    };
+  },
+};
+const SHARE = {};
+async function openShareCard(kind, data, lead) {
+  const spec = CARDS[kind](data || {});
+  Object.assign(SHARE, { file: null, text: spec.text, title: spec.title, name: spec.fileName });
+  openSheet(sheetHead(spec.sheetTitle) + (lead ? '<p class="lead">' + lead + '</p>' : '') +
+    '<div class="share-prev" id="share-prev"><span class="share-wait">' + logoMini(true) + 'Montando a imagem…</span></div>' +
+    '<div class="sheet-actions"><button class="btn wa" data-a="share-card">' + ico('chat') + 'Enviar no WhatsApp</button>' +
+    '<div class="row2"><button class="btn ghost" data-a="share-card">' + ico('share') + 'Outros apps</button><button class="btn ghost" data-a="copy" data-text="' + esc(spec.text) + '" data-ok="Mensagem copiada">' + ico('copy') + 'Copiar texto</button></div>' +
+    (spec.mail ? '<a class="btn plain" href="' + esc(spec.mail) + '">' + ico('envelope') + 'Enviar por e-mail (texto)</a>' : '') +
+    '<button class="btn plain" data-a="share-wa-text">' + ico('chat') + 'Só o texto no WhatsApp</button>' +
+    '<p class="hint">No iPhone, "Enviar no WhatsApp" abre a lista de apps: toque em WhatsApp e escolha a conversa. A imagem vai junto com a mensagem.</p></div>', 'Compartilhar', 'k1');
+  try {
+    const blob = await drawCard(spec.card);
+    SHARE.file = new File([blob], spec.fileName, { type: 'image/png' }); SHARE.blob = blob;
+    const box = $('#share-prev'); if (box) box.innerHTML = '<img src="' + URL.createObjectURL(blob) + '" alt="Prévia da imagem que será enviada">';
+  } catch (e) { const box = $('#share-prev'); if (box) box.innerHTML = '<span class="share-wait">Não foi possível montar a imagem. Use Só o texto.</span>'; }
+}
+function waOpen(text) {
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const u = (ios ? 'whatsapp://send?text=' : 'https://wa.me/?text=') + encodeURIComponent(text);
+  if (ios) location.href = u; else window.open(u, '_blank', 'noopener');
+}
+function shareFallback() {
+  try { const url = URL.createObjectURL(SHARE.blob); const a = document.createElement('a'); a.href = url; a.download = SHARE.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000); } catch (e) {}
+  copyText(SHARE.text, 'Imagem salva e mensagem copiada. No WhatsApp, anexe a imagem e cole a mensagem.');
 }
 
 /* ================= Face ID ================= */
@@ -1727,6 +1999,7 @@ function msgErro(e) {
     'auth/invalid-credential': 'E-mail ou senha incorretos.',
     'auth/invalid-login-credentials': 'E-mail ou senha incorretos.',
     'auth/missing-password': 'Digite a senha.',
+    'auth/operation-not-allowed': 'O Firebase precisa confirmar o novo e-mail. Tente de novo em instantes.',
     'auth/requires-recent-login': 'Por segurança, saia e entre de novo antes de excluir a conta.',
     'auth/email-already-in-use': 'Já existe uma conta com esse e-mail. Use Entrar ou Esqueceu a senha?',
     'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
@@ -1866,7 +2139,7 @@ function renderOnboarding() {
 function renderMain() {
   if (!$('#view')) {
     app.innerHTML = '<div class="frame" id="frame"><header class="top"><div class="top-l"><button class="grp" id="grp-btn" data-a="groups" aria-label="Trocar de grupo"></button><span id="sync" class="sync"></span></div>' +
-      '<div class="top-r"><button class="hbtn help" id="help" data-a="help" aria-label="Tour desta tela">?</button><button class="hbtn add" id="fab" data-a="new-exp" aria-label="Lançar despesa">' + ico('plus') + '</button></div></header><main id="view"></main></div>' +
+      '<div class="top-r"><button class="hbtn help" id="help" data-a="help" aria-label="Tour desta tela">?</button><button class="hbtn gear" id="gear" data-a="manage-group" aria-label="Grupo: pessoas, convite e configurações">' + '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + GEAR + '"/><circle cx="12" cy="12" r="3.1"/></svg>' + '</button><button class="hbtn add" id="fab" data-a="new-exp" aria-label="Lançar despesa">' + ico('plus') + '</button></div></header><main id="view"></main></div>' +
       '<nav class="tabs" aria-label="Seções"><div class="tabs-in">' + TABS.map(t => '<button class="tab" data-a="tab" data-t="' + t.id + '">' + tabIcon(t.id) + '<span>' + t.nome + '</span></button>').join('') + '</div></nav>';
   }
   $('#grp-btn').innerHTML = '<span class="eyebrow">Grupo · ' + memberIds().length + ' ' + plural(memberIds().length, 'pessoa', 'pessoas') + '</span><span class="gname"><b>' + esc(group().nome) + '</b>' + ico('chevronDown') + '</span>';
@@ -1990,14 +2263,14 @@ const VIEWS = {
       '<li style="--c:' + catOf(c).c + '"><span><span class="tile">' + ico(catOf(c).ic) + '</span>' + esc(catName(c)) + ' <span class="muted">· ' + Math.round(v / total * 100) + '%</span></span><span class="num">' + brl(v) + '</span><span class="track"><span class="fill" style="display:block;background:var(--c);width:' + Math.max(2, Math.round(v / cmax * 100)) + '%"></span></span></li>'
     ).join('') + '</ul></section>';
     const ids = Array.from(new Set(memberIds().concat(list.map(e => e.pagador)).concat(...list.map(e => Object.keys(e.divisao || {})))));
-    h += '<section class="block"><h2 class="h">Por pessoa</h2><div class="tblwrap"><table class="tbl"><thead><tr><th>Pessoa</th><th>Pagou</th><th>Consumiu</th><th>Diferença</th></tr></thead><tbody>' +
-      ids.map(u => { const pg = sum(list.filter(e => e.pagador === u), 'valor'), cs = sum(list, e => (e.divisao || {})[u] || 0), d = pg - cs;
-        return '<tr><td>' + esc(u === me() ? 'Você' : firstName(u)) + '</td><td>' + brl(pg) + '</td><td>' + brl(cs) + '</td><td class="' + (d > 0 ? 'pos' : d < 0 ? 'neg' : 'muted') + '">' + (d > 0 ? '+' : '') + brl(d) + '</td></tr>'; }).join('') +
-      '</tbody></table></div><p class="hint">Diferença do período, sem contar pagamentos de acerto.</p></section>';
+    h += '<section class="block"><h2 class="h">Por pessoa</h2><ul class="pp">' +
+      ids.map(u => { const pg = sum(list.filter(e => e.pagador === u), 'valor'), cs = sum(list, e => (e.divisao || {})[u] || 0), d = pg - cs, cl = d > 0 ? 'pos' : d < 0 ? 'neg' : '';
+        return '<li><div class="pp-h">' + person(u, 26) + '<span class="pp-d"><small>Diferença</small><b class="' + cl + '">' + (d > 0 ? '+' : '') + brl(d) + '</b></span></div><div class="pp-k"><span><small>Pagou</small><b>' + brl(pg) + '</b></span><span><small>Consumiu</small><b>' + brl(cs) + '</b></span></div></li>'; }).join('') +
+      '</ul><p class="hint">Diferença do período, sem contar pagamentos de acerto.</p></section>';
     return h;
   },
   ajustes() {
-    const p = S.profile, g = group(), dono = g.dono === me();
+    const p = S.profile;
     const tipoOpts = '<option value="">Sem chave Pix</option>' + PIX_TIPOS.map(t => '<option value="' + t.id + '"' + (p.pixTipo === t.id ? ' selected' : '') + '>' + t.nome + '</option>').join('');
     const ph = (PIX_TIPOS.find(t => t.id === p.pixTipo) || {}).ph || '';
     const tipoN = (PIX_TIPOS.find(t => t.id === p.pixTipo) || {}).nome;
@@ -2011,39 +2284,43 @@ const VIEWS = {
       '<label class="fld"><span>Cidade</span><input id="pf-cidade" name="pixCidade" maxlength="15" placeholder="São Paulo" value="' + esc(p.pixCidade) + '"></label></div>' +
       '<button class="btn">Salvar perfil</button>' +
       '<p class="hint">Só quem está nos seus grupos vê a sua chave. Ela monta o Pix copia e cola com o valor exato que te devem.</p></form>';
-    h += '<section class="block" id="sec-grupo"><div class="block-h"><h2 class="h">Grupo ' + esc(g.nome) + '</h2></div>' +
-      '<div class="invite"><span class="eyebrow">Código de convite</span><span></span><span class="code-big">' + esc(g.codigo) + '</span><button class="btn sm" data-a="copy" data-text="' + esc(inviteText()) + '" data-ok="Convite copiado. Cole no WhatsApp do grupo.">' + ico('copy') + 'Copiar convite</button></div>' +
-      '<div class="gm-row" style="border-top:0"><span class="stack">' + memberIds().slice(0, 6).map(u => markOf(u, 30)).join('') + '</span><span class="muted" style="flex:1">' + memberIds().length + ' ' + plural(memberIds().length, 'pessoa', 'pessoas') + (dono ? ' · você criou o grupo e pode remover pessoas' : ' · criado por ' + esc(who(g.dono, true))) + '</span></div>' +
-      '<div class="btns"><button class="btn" data-a="manage-group">' + ico('person2') + (dono ? 'Gerenciar grupo e pessoas' : 'Ver pessoas e sair do grupo') + '</button>' +
-      '<a class="btn ghost" href="' + esc(mailtoGroup()) + '">' + ico('envelope') + 'Convidar por e-mail</a></div>' +
-      '<p class="hint">Se o e-mail não abrir, use Copiar convite e cole onde quiser.</p></section>';
-    h += '<section class="block" id="sec-app"><h2 class="h">Convidar um amigo para o wirteilen</h2>' +
-      '<p class="hint" style="margin:-4px 0 12px">Manda o link do app com o passo a passo para instalar no iPhone. Para entrar num grupo, use o convite do grupo.</p>' +
-      '<div class="row2"><a class="btn ghost" href="' + esc(mailtoApp()) + '">' + ico('envelope') + 'Por e-mail</a><button class="btn ghost" data-a="share-text" data-text="' + esc(appInviteText()) + '">' + ico('share') + 'Outros apps</button></div></section>';
-    const snaps = LS.get(snapKey(), []);
-    h += '<section class="block" id="sec-backup"><h2 class="h">Backup</h2>' +
-      '<p class="hint" style="margin:-4px 0 14px">Cópia completa do grupo: despesas, divisões e pagamentos. No iPhone, escolha Salvar em Arquivos ou o app do Google Drive.</p>' +
-      '<div class="btns"><button class="btn" data-a="bk-json">' + ico('share') + 'Exportar backup (.json)</button>' +
-      '<div class="row2"><button class="btn ghost" data-a="hist-csv">' + ico('table') + 'Planilha (.csv)</button><button class="btn ghost" data-a="bk-copy">' + ico('copy') + 'Copiar backup</button></div></div>' +
-      '<h3 class="h3">Restaurar um backup</h3>' +
-      '<div class="btns"><label class="btn ghost file">' + ico('import') + 'Escolher arquivo .json<input type="file" id="bk-file" accept=".json,application/json,text/plain" data-ch="bk-file"></label>' +
-      '<label class="fld" style="margin:0"><span>Ou cole o conteúdo do backup</span><textarea id="bk-text" spellcheck="false" placeholder="{&quot;app&quot;:&quot;wirteilen&quot;, …}"></textarea></label>' +
-      '<button class="btn ghost" data-a="bk-read">' + ico('doc') + 'Ler backup colado</button></div>' +
-      '<h3 class="h3">Cópias automáticas neste aparelho</h3>' +
-      (snaps.length ? '<ul class="snaps">' + snaps.map((sn, i) => '<li><span><b>' + fmtDateTime(sn.em) + '</b><br><span class="muted">' + sn.n + ' ' + plural(sn.n, 'despesa', 'despesas') + ' · ' + sn.p + ' ' + plural(sn.p, 'pagamento', 'pagamentos') + '</span></span><span class="acts"><button class="btn sm ghost" data-a="snap-export" data-i="' + i + '">Exportar</button><button class="btn sm ghost" data-a="snap-restore" data-i="' + i + '">Restaurar</button></span></li>').join('') + '</ul>'
-        : '<p class="hint" style="margin:0">Ainda não há cópias. O app guarda até 8 versões do grupo sempre que os dados mudam.</p>') +
-      '</section>';
-    h += '<section class="block" id="sec-conta"><h2 class="h">Conta e segurança</h2><div class="kv"><span>E-mail</span><b>' + esc(S.user.email || '') + '</b></div>' +
+    h += '<section class="block" id="sec-conta"><h2 class="h">Conta e acesso</h2>' +
+      '<div class="ios-list"><div class="ios-li"><span>E-mail</span><b>' + esc(S.user.email || '') + '</b><button class="btn ghost" data-a="chg-email">Trocar</button></div>' +
+      '<div class="ios-li"><span>Senha</span><b>••••••••</b><button class="btn ghost" data-a="chg-pass">Trocar</button></div></div>' +
       '<label class="switch-row' + (S.faceAvail ? '' : ' sw-off') + '" style="background:var(--bg)"><span><b>' + ico('faceid') + ' Entrar com Face ID</b><small>' + (S.faceAvail ? 'Abre o app com o seu rosto neste iPhone. Depois de 5 minutos fora do app, ele pede de novo.' : 'Disponível no iPhone com Face ID ou Touch ID, com o app aberto pelo endereço publicado.') + '</small></span>' +
       '<input type="checkbox" class="switch" id="faceid-sw" data-ch="faceid" aria-label="Entrar com Face ID"' + (LOCK.on() ? ' checked' : '') + (S.faceAvail ? '' : ' disabled') + '></label>' +
-      '<div class="btns"><button class="btn ghost" data-a="reset-own">' + ico('envelope') + 'Trocar senha por e-mail</button>' +
-      (store === FB ? '<button class="btn ghost" data-a="resync">' + ico('sync') + 'Forçar sincronização</button>' : '') +
+      '<div class="btns">' + (store === FB ? '<button class="btn ghost" data-a="resync">' + ico('sync') + 'Forçar sincronização</button>' : '') +
       (store === Demo ? '<button class="btn ghost" data-a="demo-reset">' + ico('undo') + 'Restaurar dados de exemplo</button>' : '') +
       '<button class="btn danger" data-a="logout">' + ico('logout') + 'Sair</button>' +
-      '<button class="btn plain" data-a="del-account" style="color:var(--neg)">' + ico('trash') + 'Excluir minha conta</button></div>' +
-      '<p class="hint">wirteilen v' + APP_VERSION + ' · ' + (store === FB ? 'Firebase, projeto ' + esc(CFG.projectId) + '. Funciona sem internet e sincroniza quando a conexão volta.' : 'Modo demonstração: os dados ficam só neste aparelho e não aparecem para outras pessoas.') + '</p></section>';
+      '<button class="btn plain" data-a="del-account" style="color:var(--neg)">' + ico('trash') + 'Excluir minha conta</button></div></section>';
+    h += '<section class="block" id="sec-sobre"><h2 class="h">Sobre</h2><div class="ios-list"><div class="ios-li"><span>Versão</span><b>wirteilen v' + APP_VERSION + '</b></div>' +
+      '<div class="ios-li"><span>Base</span><b>' + (store === FB ? 'Firebase · ' + esc(CFG.projectId) : 'Demonstração, só neste aparelho') + '</b></div></div>' +
+      '<p class="hint" style="margin:0">' + (store === FB ? 'Funciona sem internet e sincroniza quando a conexão volta.' : 'Os dados da demonstração não aparecem para outras pessoas.') + ' O grupo (pessoas, convite, categorias) fica na engrenagem do topo; os backups, na aba Backup.</p></section>';
     return h;
   },
+  backup() {
+    const g = group(), dono = g.dono === me(), snaps = LS.get(snapKey(), []), log = LS.get(bkLogKey(), []);
+    let h = hintCard('backup') + '<section class="hero">' + heroMark() + '<div><span class="hero-k">Backups do grupo</span><span class="big" style="font-size:30px">' + esc(g.nome) + '</span>' +
+      '<span class="hero-s">' + (snaps.length ? 'Última cópia automática: ' + fmtDateTime(snaps[0].em) : 'Ainda sem cópia automática neste aparelho') + '</span></div>' +
+      '<div class="hero-kpis"><div><span>Despesas</span><b>' + S.expenses.length + '</b></div><div><span>Pagamentos</span><b>' + S.payments.length + '</b></div><div><span>Cópias aqui</span><b>' + snaps.length + '</b></div></div></section>';
+    h += '<section class="block" id="sec-exportar"><h2 class="h">Salvar um backup</h2>' +
+      '<p class="hint" style="margin:-4px 0 14px">Cópia completa do grupo: despesas, divisões e pagamentos. No iPhone, escolha Salvar em Arquivos ou o app do Google Drive.</p>' +
+      '<div class="btns"><button class="btn" data-a="bk-json">' + ico('share') + 'Exportar backup (.json)</button>' +
+      '<div class="row2"><button class="btn ghost" data-a="hist-csv">' + ico('table') + 'Planilha (.csv)</button><button class="btn ghost" data-a="bk-copy">' + ico('copy') + 'Copiar backup</button></div></div></section>';
+    h += '<section class="block" id="sec-restaurar"><h2 class="h">Ler e restaurar</h2>' +
+      '<p class="hint" style="margin:-4px 0 14px">' + (dono ? 'O app mostra um resumo antes de mudar qualquer dado.' : 'Qualquer pessoa pode ler um backup para conferir. Restaurar é só de quem criou o grupo (' + esc(nameOf(g.dono)) + ').') + '</p>' +
+      '<div class="btns"><label class="btn ghost file">' + ico('import') + 'Escolher arquivo .json<input type="file" id="bk-file" accept=".json,application/json,text/plain" data-ch="bk-file"></label>' +
+      '<label class="fld" style="margin:0"><span>Ou cole o conteúdo do backup</span><textarea id="bk-text" spellcheck="false" placeholder="{&quot;app&quot;:&quot;wirteilen&quot;, …}"></textarea></label>' +
+      '<button class="btn ghost" data-a="bk-read">' + ico('doc') + 'Ler backup colado</button></div></section>';
+    h += '<section class="block" id="sec-copias"><h2 class="h">Cópias automáticas neste aparelho</h2>' +
+      (snaps.length ? '<ul class="snaps">' + snaps.map((sn, i) => '<li><span><b>' + fmtDateTime(sn.em) + '</b><br><span class="muted">' + sn.n + ' ' + plural(sn.n, 'despesa', 'despesas') + ' · ' + sn.p + ' ' + plural(sn.p, 'pagamento', 'pagamentos') + '</span></span><span class="acts"><button class="btn sm ghost" data-a="snap-export" data-i="' + i + '">Exportar</button><button class="btn sm ghost" data-a="snap-restore" data-i="' + i + '">Abrir</button></span></li>').join('') + '</ul>'
+        : '<p class="hint" style="margin:0">Ainda não há cópias. O app guarda até 8 versões do grupo sempre que os dados mudam.</p>') + '</section>';
+    h += '<section class="block" id="sec-historico"><h2 class="h">Salvos e lidos neste aparelho</h2>' +
+      (log.length ? '<ul class="bk-log">' + log.map(x => '<li>' + ico(x.ic || 'doc') + '<span><b>' + esc(x.t) + '</b><small>' + fmtDateTime(x.em) + (x.d ? ' · ' + esc(x.d) : '') + '</small></span></li>').join('') + '</ul>'
+        : '<p class="hint" style="margin:0">Nada ainda. Cada backup exportado, lido ou restaurado aparece aqui.</p>') + '</section>';
+    return h;
+  },
+
 };
 /* ═══════════════════════════════════════════════════════════════════════
    MANUAL — blocos-guia "Passo a passo" + consulta rápida, com busca.
@@ -2057,6 +2334,7 @@ const _gvBt = (txt, ic, tipo) => '<span class="gv-ui' + (tipo ? ' ' + tipo : '')
 const _gvAba = id => '<span class="gv-ui tab"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + TAB_IC[id].o + '</svg>' + esc(TABS.find(t => t.id === id).nome) + '</span>';
 const _gvSeg = (txt, on) => '<span class="gv-ui seg' + (on ? ' on' : '') + '">' + esc(txt) + '</span>';
 const _gvFab = () => '<span class="gv-ui add">' + ico('plus') + '</span>';
+const _gvGear = () => '<span class="gv-ui add" style="background:var(--fill);color:var(--ink)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + GEAR + '"/><circle cx="12" cy="12" r="3.1"/></svg></span>';
 const _gvLink = txt => '<span class="gv-ui link">' + esc(txt) + '</span>';
 const _gvIc = n => '<span class="gv-ui plain">' + ico(n) + '</span>';
 const _gvHl = (html, round) => '<span class="gv-hl' + (round ? ' round' : '') + '">' + html + '</span>';
@@ -2099,10 +2377,10 @@ const GUIAS = [
       { ic: 'copy', rot: 'Convite', tt: 'Chamar os amigos para o grupo',
         res: 'O convite leva o link e o código. Quem abre o link cai direto no grupo certo.',
         passos: [
-          'Ainda em ' + _gvAba('ajustes') + ', desça até o bloco <b>Grupo</b>.',
-          'Toque em ' + _gvBt('Copiar convite', 'copy', 'primary') + ' e cole no WhatsApp do grupo.',
-          'Ou toque em ' + _gvBt('Convidar por e-mail', 'envelope') + ': o e-mail já sai com o link, o código e como instalar no iPhone.',
-          'Para chamar alguém só para conhecer o app, use o bloco <b>Convidar um amigo para o wirteilen</b>.',
+          'Toque na engrenagem ' + _gvGear() + ' no topo, ao lado do <b>?</b>.',
+          'Toque em ' + _gvBt('Enviar convite (imagem)', 'chat', 'primary') + ' e escolha o WhatsApp: vai uma imagem com o código e o link.',
+          'Ou use ' + _gvBt('Copiar', 'copy') + ' ou ' + _gvBt('Convidar por e-mail', 'envelope') + '.',
+          'Para chamar alguém só para conhecer o app, use <b>Enviar o wirteilen para um amigo</b>, no fim da mesma tela.',
         ],
         fig: 'invite' },
       { ic: 'iphone', rot: 'iPhone', tt: 'Instalar o app na tela de início',
@@ -2185,17 +2463,17 @@ const GUIAS = [
     titulo: 'Gerenciar o grupo',
     sub: 'Nome, pessoas, categorias, convite por e-mail e exclusão com o histórico em .csv.',
     etapas: [
-      { ic: 'person2', rot: 'Abrir', tt: 'Aba Ajustes — abrir o grupo',
-        res: 'Quem criou o grupo gerencia tudo. Os outros membros veem as pessoas e podem sair.',
+      { ic: 'person2', rot: 'Abrir', tt: 'Engrenagem do topo — abrir o grupo',
+        res: 'Quem criou o grupo gerencia pessoas, nome e categorias. Todos podem convidar e ver as pessoas.',
         passos: [
-          'Abra a aba ' + _gvAba('ajustes') + '.',
-          'No bloco do grupo, toque em ' + _gvBt('Gerenciar grupo', 'person2', 'primary') + '.',
+          'Em qualquer aba, toque na engrenagem ' + _gvGear() + ' no topo, ao lado do <b>?</b>.',
+          'A tela <b>Grupo</b> abre com o convite, as pessoas e as categorias.',
         ] },
       { ic: 'envelope', rot: 'Convite', tt: 'Trocar o nome e convidar',
         res: 'O código de convite e o link vão juntos no e-mail ou na mensagem.',
         passos: [
           'Em <b>Nome do grupo</b>, troque o nome e toque em ' + _gvBt('Salvar') + '.',
-          'Toque em ' + _gvBt('Por e-mail', 'envelope') + ' para abrir o e-mail pronto, ou ' + _gvBt('Outros apps', 'share') + ' para WhatsApp e outros.',
+          'Toque em ' + _gvBt('Enviar convite (imagem)', 'chat', 'primary') + ' para mandar no WhatsApp, ou ' + _gvBt('Convidar por e-mail', 'envelope') + '.',
         ] },
       { ic: 'userminus', rot: 'Pessoas', tt: 'Remover alguém do grupo',
         res: 'Quem sai continua nas despesas antigas como ex-membro, e as contas continuam fechando.',
@@ -2239,7 +2517,7 @@ const GUIAS = [
       { ic: 'faceid', rot: 'Face ID', tt: 'Ligar o Face ID',
         res: 'O primeiro acesso é com e-mail e senha. Depois, o Face ID abre o app neste iPhone.',
         passos: [
-          'Em ' + _gvAba('ajustes') + ', no bloco <b>Conta e segurança</b>, ligue <b>Entrar com Face ID</b>.',
+          'Em ' + _gvAba('ajustes') + ', no bloco <b>Conta e acesso</b>, ligue <b>Entrar com Face ID</b>.',
           'Confirme o rosto quando o iPhone pedir.',
           'Na próxima abertura, toque em ' + _gvBt('Entrar com Face ID', 'faceid', 'primary') + '.',
         ],
@@ -2251,10 +2529,10 @@ const GUIAS = [
     titulo: 'Fazer e restaurar o backup',
     sub: 'Guardar uma cópia do grupo fora do app e trazê-la de volta quando precisar.',
     etapas: [
-      { ic: 'share', rot: 'Exportar', tt: 'Aba Ajustes — exportar o backup',
+      { ic: 'share', rot: 'Exportar', tt: 'Aba Backup — exportar o backup',
         res: 'O backup é uma cópia completa do grupo: despesas, divisões e pagamentos.',
         passos: [
-          'Abra a aba ' + _gvAba('ajustes') + ' e desça até <b>Backup</b>.',
+          'Abra a aba ' + _gvAba('backup') + '.',
           'Toque em ' + _gvBt('Exportar backup (.json)', 'share', 'primary') + '.',
           'Na folha do iPhone, escolha <b>Salvar em Arquivos</b> ou o app do <b>Google Drive</b>.',
           'Para analisar no Excel, use ' + _gvBt('Planilha (.csv)', 'table') + '.',
@@ -2263,7 +2541,7 @@ const GUIAS = [
       { ic: 'import', rot: 'Abrir', tt: 'Abrir o backup para restaurar',
         res: 'O app lê o arquivo e mostra um resumo antes de mexer em qualquer dado.',
         passos: [
-          'Em ' + _gvAba('ajustes') + ', no bloco <b>Restaurar um backup</b>, toque em ' + _gvBt('Escolher arquivo .json', 'import') + '.',
+          'Em ' + _gvAba('backup') + ', no bloco <b>Ler e restaurar</b>, toque em ' + _gvBt('Escolher arquivo .json', 'import') + '.',
           'Ou cole o conteúdo copiado no campo de texto e toque em ' + _gvBt('Ler backup colado', 'doc') + '.',
           'Confira o resumo: grupo, data, quantidade de despesas e o total.',
         ] },
@@ -2286,8 +2564,8 @@ const GUIAS = [
       { ic: 'iphone', rot: 'Automático', tt: 'Usar as cópias automáticas do aparelho',
         res: 'O app guarda sozinho até 8 versões do grupo neste aparelho, sempre que os dados mudam.',
         passos: [
-          'Em ' + _gvAba('ajustes') + ', veja <b>Cópias automáticas neste aparelho</b>. Cada linha mostra data, hora e quantidade de despesas.',
-          'Toque em ' + _gvBt('Restaurar', '', 'sm') + ' na versão desejada e siga as etapas 3 e 4.',
+          'Em ' + _gvAba('backup') + ', veja <b>Cópias automáticas neste aparelho</b>. Cada linha mostra data, hora e quantidade de despesas.',
+          'Toque em ' + _gvBt('Abrir', '', 'sm') + ' na versão desejada e siga as etapas 3 e 4.',
           'Ou toque em ' + _gvBt('Exportar') + ' para guardar a cópia fora do celular.',
         ],
         nota: 'As cópias automáticas ficam só neste aparelho. Limpar os dados do Safari apaga as cópias; o backup exportado é o que fica guardado de verdade.', warn: true },
@@ -2318,7 +2596,7 @@ const GUIAS = [
         res: 'A senha antiga deixa de valer em todos os aparelhos.',
         passos: [
           'Volte ao wirteilen e entre com o e-mail e a senha nova.',
-          'Já logado, dá para trocar a senha em ' + _gvAba('ajustes') + ' › ' + _gvBt('Trocar senha por e-mail', 'envelope') + '.',
+          'Já logado, dá para trocar a senha em ' + _gvAba('ajustes') + ' › <b>Conta e acesso</b> › Senha › ' + _gvBt('Trocar') + '.',
         ] },
     ],
   },
@@ -2347,7 +2625,7 @@ const MAN_SECOES = [
     det: 'O wirteilen não manda notificação no celular com o app fechado: isso exige um servidor pago. O aviso aparece quando o amigo abre o app.' },
   { id: 'categorias', ic: 'grid', t: 'Categorias', s: '20 de base e as do grupo.',
     faz: 'Organiza as despesas no Resumo, cada uma com ícone e cor.',
-    uso: 'Quem criou o grupo cria categorias novas no formulário da despesa ou em <b>Gerenciar grupo</b>.',
+    uso: 'Quem criou o grupo cria categorias novas no formulário da despesa ou na engrenagem do topo, em <b>Categorias do grupo</b>.',
     det: 'Ao excluir uma categoria do grupo, as despesas dela passam a aparecer em Outros.' },
   { id: 'foto', ic: 'camera', t: 'Foto de perfil', s: 'Foto do iPhone ou ícone.',
     faz: 'Mostra a sua imagem ao lado do nome em todo o app.',
@@ -2359,20 +2637,28 @@ const MAN_SECOES = [
     det: 'O Face ID fica no aparelho: o app nunca recebe a imagem do rosto. Em outro aparelho, ligue de novo.' },
   { id: 'convites', ic: 'envelope', t: 'Convites por e-mail', s: 'Para o grupo ou para o app.',
     faz: 'Abre o app de e-mail com a mensagem pronta: link, código do grupo e como instalar no iPhone.',
-    uso: 'Em Ajustes: <b>Convidar por e-mail</b> (grupo) ou <b>Convidar um amigo para o wirteilen</b> (app).',
+    uso: 'Na engrenagem do topo: <b>Enviar convite (imagem)</b>, <b>Convidar por e-mail</b> ou <b>Enviar o wirteilen para um amigo</b>.',
     det: 'O e-mail sai da sua conta, pelo app de e-mail do iPhone. Sem app de e-mail configurado, use Copiar ou Outros apps.' },
+  { id: 'imagem', ic: 'chat', t: 'Enviar como imagem', s: 'Despesa, convite e Pix no WhatsApp.',
+    faz: 'Monta uma imagem com o visual do app: a despesa com a divisão, o convite com o código ou a cobrança Pix com o QR Code.',
+    uso: 'Toque em <b>Enviar no WhatsApp</b> e escolha WhatsApp na lista de apps do iPhone. A mensagem em texto vai junto.',
+    det: 'Se o aparelho não aceitar enviar a imagem direto, o app salva a imagem e copia a mensagem para você anexar no WhatsApp.' },
+  { id: 'conta-email', ic: 'envelope', t: 'Trocar e-mail ou senha', s: 'Ajustes › Conta e acesso.',
+    faz: 'Troca o e-mail de entrada ou a senha da conta.',
+    uso: 'Toque em <b>Trocar</b> na linha do e-mail ou da senha. O app pede a senha atual para confirmar que é você.',
+    det: 'O e-mail novo só vale depois que você tocar no link que chega nele.' },
   { id: 'conta-excluir', ic: 'trash', t: 'Excluir a conta', s: 'Ajustes › Conta e segurança.',
     faz: 'Apaga o seu login, o perfil, a chave Pix e a foto.',
     uso: 'Toque em <b>Excluir minha conta</b>, confirme a senha e marque a confirmação.',
     det: 'Nos grupos de outras pessoas, você sai e suas despesas ficam como ex-membro. Nos que você criou, o grupo passa para outro membro; se só você estiver nele, é excluído. Faça os acertos antes.' },
   { id: 'remover', ic: 'userminus', t: 'Remover alguém do grupo', s: 'Só quem criou o grupo.',
     faz: 'Tira a pessoa do grupo. Ela continua no histórico como ex-membro.',
-    uso: 'Ajustes › <b>Gerenciar grupo e pessoas</b> › <b>Remover</b> ao lado do nome, e toque de novo para confirmar.',
+    uso: 'Engrenagem do topo › <b>Remover</b> ao lado do nome, e toque de novo para confirmar.',
     det: 'O app avisa se a pessoa ainda tem saldo. Acerte antes de remover.' },
   { id: 'versao', ic: 'info', t: 'Versão', s: 'wirteilen v' + APP_VERSION + '.',
     faz: 'A versão aparece na tela de entrada e no fim de Ajustes.',
     uso: 'Ao relatar um problema, diga a versão.',
-    det: 'A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
+    det: 'A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
   { id: 'divisao', ic: 'person2', t: 'Modos de divisão', s: 'Igual, Valores e Partes.',
     faz: 'Define quanto da despesa cabe a cada pessoa.',
     uso: '<b>Igual</b> divide entre os marcados. <b>Valores</b> recebe o valor exato de cada um. <b>Partes</b> divide por peso (2 partes pagam o dobro de 1).',
@@ -2436,7 +2722,7 @@ function _gvFig(kind) {
   if (k === 'invite') {
     return '<div class="gv-fig"><div class="gv-scr surface"><span class="eyebrow">Código de convite</span>' +
       '<div class="gv-row" style="justify-content:space-between;margin-top:4px"><span class="code-big" style="font-size:22px">ILHA26</span>' + _gvHl(_gvBt('Copiar convite', 'copy', 'primary')) + '</div></div>' +
-      cap('Bloco <b>Grupo</b> da aba Ajustes. Cada grupo tem o próprio código.') + '</div>';
+      cap('Tela do grupo, aberta pela engrenagem do topo. Cada grupo tem o próprio código.') + '</div>';
   }
   if (k === 'iphone') {
     return '<div class="gv-fig"><div class="gv-scr surface">' +
@@ -2560,7 +2846,7 @@ function manBodyHtml() {
 VIEWS.manual = () => '<section class="hero man-tours" id="man-tours">' + heroMark() + '<span class="hero-k">Tour guiado · v' + APP_VERSION + '</span><span class="big">Conheça o wirteilen tela por tela</span>' +
   '<span class="hero-s">O tour destaca cada recurso e explica para que serve. Feche quando quiser no ×, em Pular ou na tecla Esc.</span>' +
   '<button class="btn white" data-a="tour-all">' + ico('play') + 'Fazer o tour completo</button>' +
-  '<div class="tour-chips">' + [['despesas', 'Despesas'], ['saldos', 'Saldos'], ['resumo', 'Resumo'], ['ajustes', 'Ajustes']].map(([t, n]) => '<button data-a="tour" data-tt="' + t + '">' + tabIcon(t) + n + '</button>').join('') + '</div></section>' +
+  '<div class="tour-chips">' + [['despesas', 'Despesas'], ['saldos', 'Saldos'], ['resumo', 'Resumo'], ['backup', 'Backup'], ['ajustes', 'Ajustes']].map(([t, n]) => '<button data-a="tour" data-tt="' + t + '">' + tabIcon(t) + n + '</button>').join('') + '</div></section>' +
   '<div class="man-head"><span class="eyebrow">wirteilen</span><h2 class="man-title">Manual</h2>' +
   '<p class="hint">Passo a passo dos caminhos principais e consulta rápida do que cada parte do app faz.</p>' +
   '<label class="man-search">' + ico('search') + '<input id="man-q" type="search" placeholder="Buscar: Pix, parcelas, Face ID…" autocomplete="off" enterkeyhint="search" aria-label="Buscar no manual" value="' + esc(MAN.q) + '"></label></div>' +
@@ -2640,7 +2926,8 @@ const HINTS = {
   despesas: ['Primeira vez aqui?', 'Tour de 1 minuto pela tela e pela despesa'],
   saldos: ['Como acertar as contas', 'Tour por saldos, Pix e pagamentos'],
   resumo: ['Para onde foi o dinheiro', 'Tour pelo resumo do grupo'],
-  ajustes: ['Seu perfil e o grupo', 'Foto, Pix, convites, backup e Face ID'],
+  backup: ['Seus backups', 'Salvar, ler, restaurar e cópias automáticas'],
+  ajustes: ['Sua conta', 'Foto, Pix, e-mail, senha e Face ID'],
 };
 function hintCard(tab) {
   tab = tab || 'despesas';
@@ -2685,7 +2972,7 @@ function openExpenseView(e) {
     (e.serie ? '<div><span>Repetição</span><b>' + e.serie.k + ' de ' + e.serie.n + ' (' + (e.serie.freq === 'semanal' ? 'toda semana' : 'todo mês') + ')</b></div>' : '') + '</div>' +
     '<h3 class="h3">Divisão (' + esc(({ igual: 'igual', valores: 'por valores', partes: 'por partes' })[e.modo] || 'igual') + ')</h3>' +
     '<div class="ro-list">' + ids.map(u => '<div>' + person(u, 24) + '<b>' + brl(e.divisao[u]) + '</b></div>').join('') + '</div>' +
-    roLock(e, 'lançou') +
+    roLock(e, 'lançou') + '<div class="btns" style="margin-bottom:10px"><button class="btn ghost" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('share') + 'Enviar como imagem</button></div>' +
     '<p class="hint">Lançada por ' + esc(who(autor(e))) + (e.criadoEm ? ' em ' + fmtDateTime(e.criadoEm) : '') + (e.atualizadoEm && e.atualizadoEm !== e.criadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '.</p>', 'Despesa', 'k1');
 }
 function openPaymentView(p) {
@@ -2728,6 +3015,7 @@ function openExpense(id) {
     '<div id="ex-split" class="split"></div><p id="ex-status" class="split-status" aria-live="polite"></p></div>' +
     repF + avisarF +
     '<div class="sheet-actions"><button class="btn">' + (e ? 'Salvar alterações' : 'Lançar despesa') + '</button>' +
+    (e ? '<button type="button" class="btn ghost" data-a="share-exp" data-id="' + esc(e.id) + '">' + ico('share') + 'Enviar como imagem</button>' : '') +
     (e ? '<button type="button" class="btn danger" data-a="del-exp" data-id="' + esc(e.id) + '">' + ico('trash') + 'Excluir despesa</button><p class="hint">Lançada por ' + esc(who(e.criadoPor || e.pagador)) + (e.atualizadoEm ? ' · alterada em ' + fmtDateTime(e.atualizadoEm) : '') + '</p>' : '') +
     '</div></form>', 'Despesa', 'k1');
   renderSplit();
@@ -2819,7 +3107,8 @@ function openPix(de, para, valor) {
       '<div class="kv"><span>Pix copia e cola · valor incluso</span><code class="payload">' + esc(payload) + '</code></div>' +
       '<div class="btns"><button class="btn" data-a="copy" data-text="' + esc(payload) + '" data-ok="Código Pix copiado. Cole no app do banco.">' + ico('copy') + 'Copiar código Pix</button></div>' +
       '<div class="kv" style="margin-top:16px"><span>Chave (' + esc(tipo) + ') · ' + esc(m.pixNome || nome) + '</span><b class="mono">' + esc(m.pixChave) + '</b></div>' +
-      '<div class="btns"><button class="btn ghost" data-a="copy" data-text="' + esc(normKey(m.pixTipo, m.pixChave)) + '" data-ok="Chave copiada">' + ico('key') + 'Copiar só a chave</button></div>' +
+      '<div class="btns"><button class="btn ghost" data-a="copy" data-text="' + esc(normKey(m.pixTipo, m.pixChave)) + '" data-ok="Chave copiada">' + ico('key') + 'Copiar só a chave</button>' +
+      '<button class="btn wa" data-a="share-pix" data-de="' + esc(de) + '" data-para="' + esc(para) + '" data-v="' + valor + '">' + ico('chat') + (para === me() ? 'Cobrar no WhatsApp (imagem com QR)' : 'Enviar o Pix como imagem') + '</button></div>' +
       '<p class="hint">No app do banco, escolha Pix, depois Pix copia e cola, e cole o código. O valor de ' + brl(valor) + ' já vem preenchido. Confira o nome do recebedor antes de confirmar.</p>';
   }
   openSheet(sheetHead(para === me() ? 'Seu Pix' : 'Pix para ' + firstName(para)) +
@@ -2833,6 +3122,9 @@ function notifyText(d, n, desc, freq) {
   return eu + ' lançou "' + desc + '" de ' + brl(d.valor) + ' no grupo ' + g.nome + (n > 1 ? ', repetindo ' + n + ' vezes (' + (freq === 'semanal' ? 'toda semana' : 'todo mês') + ')' : '') + '.\nDivisão: ' + parts + '.' + (url ? '\nVeja no wirteilen: ' + url : '');
 }
 function openNotify(d, n, desc, freq) {
+  return openShareCard('despesa', { d, n, desc, freq }, 'Despesa lançada. Quem está no grupo vê em <b>Novidades</b> ao abrir o app. Mande também a imagem no WhatsApp.');
+}
+function openNotifyTexto(d, n, desc, freq) {
   const txt = notifyText(d, n, desc, freq);
   openSheet(sheetHead('Avisar o grupo') +
     '<p class="lead">Despesa lançada. Quem está no grupo vê o aviso em Novidades ao abrir o wirteilen. Quer mandar também por mensagem?</p>' +
@@ -2954,18 +3246,23 @@ function gmCatsHtml() {
 }
 function gmCatsPaint() { const b = $('#gm-cats'); if (b) b.innerHTML = gmCatsHtml(); }
 function openGroupManage() {
-  const g = group(), dono = g.dono === me(), b = balances();
+  const g = group(); if (!g) return;
+  const dono = g.dono === me(), b = balances();
   const rows = memberIds().map(u => { const v = b[u] || 0;
     return '<div class="gm-row">' + person(u, 34) + '<span class="amt ' + (v > 0 ? 'pos' : v < 0 ? 'neg' : 'muted') + '">' + (u === g.dono ? '<small class="muted" style="display:block;font-weight:500">criou o grupo</small>' : '') + (v ? (v > 0 ? '+' : '') + brl(v) : 'em dia') + '</span>' +
       (dono && u !== me() ? '<button class="gm-x" data-a="gm-rm" data-u="' + esc(u) + '" aria-label="Remover ' + esc(nameOf(u)) + ' do grupo">' + ico('userminus') + 'Remover</button>' : '') + '</div>'; }).join('');
   openSheet(sheetHead('Grupo') +
-    (dono ? '<form data-f="rename" class="inline-form" style="margin-bottom:14px"><label class="fld"><span>Nome do grupo</span><input id="gr-nome" name="nome" required maxlength="40" value="' + esc(g.nome) + '"></label><button class="btn ghost">Salvar</button></form>'
-          : '<p class="lead"><b>' + esc(g.nome) + '</b> · criado por ' + esc(who(g.dono, true)) + '</p>') +
+    '<div class="gm-hero"><span class="stack">' + memberIds().slice(0, 5).map(u => markOf(u, 34)).join('') + '</span><span style="min-width:0"><b>' + esc(g.nome) + '</b><small>' + memberIds().length + ' ' + plural(memberIds().length, 'pessoa', 'pessoas') + ' · ' + (dono ? 'você criou o grupo' : 'criado por ' + esc(who(g.dono, true))) + '</small></span></div>' +
+    '<h3 class="h3" style="margin-top:0">Convidar para o grupo</h3>' +
     '<div class="invite"><span class="eyebrow">Código de convite</span><span></span><span class="code-big">' + esc(g.codigo) + '</span><button class="btn sm" data-a="copy" data-text="' + esc(inviteText()) + '" data-ok="Convite copiado">' + ico('copy') + 'Copiar</button></div>' +
-    '<div class="row2" style="margin-bottom:6px"><a class="btn ghost" href="' + esc(mailtoGroup()) + '">' + ico('envelope') + 'Por e-mail</a><button class="btn ghost" data-a="share-text" data-text="' + esc(groupInviteBody()) + '">' + ico('share') + 'Outros apps</button></div>' +
+    '<div class="btns" style="margin-bottom:6px"><button class="btn wa" data-a="share-convite">' + ico('chat') + 'Enviar convite (imagem)</button>' +
+    '<a class="btn ghost" href="' + esc(mailtoGroup()) + '">' + ico('envelope') + 'Convidar por e-mail</a></div>' +
+    '<p class="hint">Qualquer pessoa do grupo pode convidar.</p>' +
     '<h3 class="h3">Pessoas (' + memberIds().length + ')</h3>' + rows +
-    (dono ? '<p class="hint">Quem sai continua no histórico como ex-membro. O saldo dele fica registrado nas despesas antigas.</p>' : '') +
+    (dono ? '<p class="hint">Só quem criou o grupo remove pessoas. Quem sai continua no histórico como ex-membro.</p>' : '<p class="hint">Só quem criou o grupo (' + esc(nameOf(g.dono)) + ') remove pessoas e muda o nome e as categorias.</p>') +
+    (dono ? '<h3 class="h3">Nome do grupo</h3><form data-f="rename" class="inline-form" style="margin-bottom:6px"><label class="fld"><span class="sr">Nome do grupo</span><input id="gr-nome" name="nome" required maxlength="40" value="' + esc(g.nome) + '" aria-label="Nome do grupo"></label><button class="btn ghost">Salvar</button></form>' : '') +
     '<h3 class="h3">Categorias do grupo</h3><div id="gm-cats">' + gmCatsHtml() + '</div>' +
+    '<h3 class="h3">Indicar o app</h3><button class="btn ghost" data-a="share-app">' + ico('iphone') + 'Enviar o wirteilen para um amigo</button>' +
     '<div class="danger-zone">' + (dono ? '<button class="btn danger" data-a="gm-del-open">' + ico('trash') + 'Excluir grupo</button><p class="hint">Antes de apagar, o app oferece o histórico completo em .csv.</p>'
       : '<button class="btn danger" data-a="gm-leave">' + ico('door') + 'Sair do grupo</button>') + '</div>', 'Grupo', 'k5');
 }
@@ -3001,6 +3298,24 @@ function historyCSV() {
   L.push('', q('ACERTOS PENDENTES'), [q('Quem paga'), q('Para quem'), q('Valor')].join(';'));
   if (st.length) st.forEach(x => L.push([q(nameOf(x.de)), q(nameOf(x.para)), n(x.valor)].join(';'))); else L.push(q('Nenhum: o grupo está acertado.'));
   return '﻿' + L.join('\r\n');
+}
+function openChangeEmail() {
+  openSheet(sheetHead('Trocar e-mail') +
+    '<p class="lead">E-mail atual: <b>' + esc(S.user.email || '') + '</b></p>' +
+    '<form data-f="chg-email" novalidate><div class="ios-group">' +
+    iosRow('Novo', '<input id="ce-email" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required placeholder="nome@email.com">') +
+    (store === FB ? iosRow('Senha', '<input id="ce-senha" type="password" name="senha" autocomplete="current-password" required placeholder="Senha atual">', true) : '') + '</div>' +
+    '<p class="hint">' + (store === FB ? 'Enviamos um link para o novo e-mail. A troca vale depois que você tocar no link; até lá, entre com o e-mail atual.' : 'Na demonstração a troca é imediata.') + '</p>' +
+    '<div class="sheet-actions"><button class="btn">Trocar e-mail</button></div></form>', 'E-mail', 'k5');
+}
+function openChangePass() {
+  openSheet(sheetHead('Trocar senha') +
+    '<form data-f="chg-pass" novalidate><div class="ios-group">' +
+    (store === FB ? iosRow('Atual', '<input id="cp-atual" type="password" name="atual" autocomplete="current-password" required placeholder="Senha de hoje">', true) : '') +
+    iosRow('Nova', '<input id="cp-nova" type="password" name="nova" autocomplete="new-password" required minlength="6" placeholder="6 ou mais caracteres">', true) +
+    iosRow('Repita', '<input id="cp-nova2" type="password" name="nova2" autocomplete="new-password" required minlength="6" placeholder="A mesma senha">', true) + '</div>' +
+    '<div class="sheet-actions"><button class="btn">Salvar senha nova</button>' +
+    '<button type="button" class="btn plain" data-a="reset-own">' + ico('envelope') + 'Esqueci a atual: mandar link por e-mail</button></div></form>', 'Senha', 'k5');
 }
 function openDeleteAccount() {
   const nome = S.profile.nome || 'Ex-membro', b = S.gid ? balances() : {};
@@ -3048,6 +3363,7 @@ function parseBackup(text) {
 }
 function openRestore(bk, origem) {
   RESTORE = bk;
+  bkLog('Backup lido', origem + ' · ' + bk.despesas.length + ' despesas', 'import');
   const cur = memberIds(), g = group(), dono = g.dono === me();
   const refs = new Set(); bk.despesas.forEach(d => { refs.add(d.pagador); Object.keys(d.divisao).forEach(u => refs.add(u)); }); bk.pagamentos.forEach(p => { refs.add(p.de); refs.add(p.para); });
   const names = {}; bk.membros.forEach(m => { names[m.uid] = m.nome; });
@@ -3093,6 +3409,8 @@ function buildBackup() {
   };
 }
 let snapT;
+const bkLogKey = () => 'rateio.bklog.' + me() + '.' + S.gid;
+function bkLog(t, d, ic) { const k = bkLogKey(), l = LS.get(k, []); l.unshift({ t, d: d || '', ic: ic || 'doc', em: new Date().toISOString() }); LS.set(k, l.slice(0, 20)); if (S.tab === 'backup') changed(); }
 function maybeSnapshot() {
   if (!S.user || !group() || !(S.loaded.e && S.loaded.p && S.loaded.m)) return;
   clearTimeout(snapT);
@@ -3193,6 +3511,19 @@ const ACTIONS = {
   'hint-x'(t) { const tb = t.dataset.tt || 'despesas'; LS.set('rateio.tour.' + tb, true); if (tb === 'despesas') LS.set('rateio.dica.ok', true); renderMain(); },
   'gv-toggle'(t) { _gvToggle(t.dataset.g); },
   avatar: openAvatar,
+  'share-card'() {
+    if (!SHARE.file) return toast('A imagem ainda está sendo montada. Um instante.');
+    const f = SHARE.file;
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], text: SHARE.text, title: SHARE.title }).catch(e => { if (!e || e.name !== 'AbortError') shareFallback(); }); return; }
+    shareFallback();
+  },
+  'share-wa-text'() { waOpen(SHARE.text); },
+  'share-app'() { openShareCard('app'); },
+  'share-convite'() { openShareCard('convite'); },
+  'share-exp'(t) { const e = S.expenses.find(x => x.id === t.dataset.id); if (e) openShareCard('despesa', { d: e, n: 1, desc: e.descricao, freq: 'nao' }); },
+  'share-pix'(t) { const de = t.dataset.de, para = t.dataset.para, valor = +t.dataset.v, m = S.members[para] || (para === me() ? publicProfile(S.profile) : {}); if (!m.pixChave) return;
+    const payload = pixPayload({ chave: normKey(m.pixTipo, m.pixChave), nome: m.pixNome || nameOf(para), cidade: m.pixCidade, valor });
+    openShareCard('pix', { de, para, valor, payload, chave: m.pixChave, tipo: (PIX_TIPOS.find(x => x.id === m.pixTipo) || {}).nome || 'Chave', recebedor: m.pixNome || nameOf(para) }); },
   'pw-eye'(t) { const i = t.parentElement.querySelector('input'); const show = i.type === 'password'; i.type = show ? 'text' : 'password'; t.innerHTML = ico(show ? 'eyeOff' : 'eye'); t.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha'); i.focus(); },
   'crop-ok'() { const c = document.createElement('canvas'); c.width = c.height = 256; cropRender(c); saveProfilePart({ foto: c.toDataURL('image/jpeg', 0.85), avIc: '', avK: 0 }); closeSheet(); toast('Foto salva'); },
   'av-ic'(t) { AV.ic = t.dataset.v; avPaint(); },
@@ -3214,7 +3545,7 @@ const ACTIONS = {
   },
   'gm-cat-del'(t) { const g = group(); if (g.dono !== me()) return; g.categorias = (g.categorias || []).filter(c => c.id !== t.dataset.id); store.saveCategories(S.gid, g.categorias); gmCatsPaint(); toast('Categoria excluída. As despesas dela passam a aparecer em Outros.'); },
   'gm-del-open'() { openDeleteGroup(); },
-  'hist-csv'() { exportFile('wirteilen-historico-' + slug(group().nome) + '-' + fileStamp() + '.csv', historyCSV(), 'text/csv'); },
+  'hist-csv'() { bkLog('Histórico exportado (.csv)', S.expenses.length + ' despesas', 'table'); exportFile('wirteilen-historico-' + slug(group().nome) + '-' + fileStamp() + '.csv', historyCSV(), 'text/csv'); },
   async 'gm-delete'(t) {
     if (!arm(t, 'Toque de novo: apagar para todos')) return;
     const g = group(), gid = S.gid, info = { codigo: g.codigo, despesas: S.expenses.slice(), pagamentos: S.payments.slice(), membros: Object.keys(S.members).concat(memberIds()).filter((u, i, a) => a.indexOf(u) === i) };
@@ -3263,6 +3594,8 @@ const ACTIONS = {
   'pay-new'(t) { openPayment(null, t.dataset.de ? { de: t.dataset.de, para: t.dataset.para, valor: Number(t.dataset.v) } : null); },
   'edit-pay'(t) { openPayment(t.dataset.id); },
   'del-account'() { openDeleteAccount(); },
+  'chg-email'() { openChangeEmail(); },
+  'chg-pass'() { openChangePass(); },
   'del-pay'(t) { if (!podeEditar(S.payments.find(x => x.id === t.dataset.id))) return toast('Só quem registrou pode excluir.'); if (!arm(t, 'Toque de novo para excluir')) return; store.deletePayment(S.gid, t.dataset.id); closeSheet(); toast('Pagamento excluído'); },
   copy(t) { copyText(t.dataset.text, t.dataset.ok); },
   async logout() {
@@ -3276,11 +3609,11 @@ const ACTIONS = {
   },
   async resync() { try { await FB.resync(); toast('Sincronização reiniciada.'); } catch (e) { toast(msgErro(e)); } },
   'demo-reset'(t) { if (!arm(t, 'Toque de novo para restaurar o exemplo')) return; Demo.reset(); toast('Dados de exemplo restaurados'); },
-  'bk-json'() { const b = buildBackup(); exportFile('wirteilen-' + slug(b.grupo.nome) + '-' + fileStamp() + '.json', JSON.stringify(b, null, 2), 'application/json'); },
+  'bk-json'() { const b = buildBackup(); bkLog('Backup exportado (.json)', b.despesas.length + ' despesas · ' + b.pagamentos.length + ' pagamentos', 'share'); exportFile('wirteilen-' + slug(b.grupo.nome) + '-' + fileStamp() + '.json', JSON.stringify(b, null, 2), 'application/json'); },
   'bk-csv'() { exportFile('wirteilen-' + slug(group().nome) + '-' + fileStamp() + '.csv', backupCSV(), 'text/csv'); },
-  'bk-copy'() { copyText(JSON.stringify(buildBackup()), 'Backup copiado. Cole num e-mail, nota ou arquivo para guardar.'); },
+  'bk-copy'() { bkLog('Backup copiado', '', 'copy'); copyText(JSON.stringify(buildBackup()), 'Backup copiado. Cole num e-mail, nota ou arquivo para guardar.'); },
   'bk-read'() { const t = $('#bk-text'); try { openRestore(parseBackup(t.value), 'Backup colado'); } catch (e) { toast(e.message); } },
-  'snap-export'(t) { const s = LS.get(snapKey(), [])[+t.dataset.i]; if (s) exportFile('wirteilen-' + slug(s.data.grupo.nome) + '-' + s.em.slice(0, 10) + '.json', JSON.stringify(s.data, null, 2), 'application/json'); },
+  'snap-export'(t) { const s = LS.get(snapKey(), [])[+t.dataset.i]; if (s) bkLog('Cópia automática exportada', fmtDateTime(s.em), 'share'); if (s) exportFile('wirteilen-' + slug(s.data.grupo.nome) + '-' + s.em.slice(0, 10) + '.json', JSON.stringify(s.data, null, 2), 'application/json'); },
   'snap-restore'(t) { const s = LS.get(snapKey(), [])[+t.dataset.i]; if (s) { try { openRestore(parseBackup(JSON.stringify(s.data)), 'Cópia automática'); } catch (e) { toast(e.message); } } },
   async 'do-restore'(t) {
     if (group().dono !== me()) return toast('Só quem criou o grupo restaura backups.');
@@ -3292,7 +3625,7 @@ const ACTIONS = {
     t.disabled = true; t.textContent = 'Restaurando…';
     try {
       await store.restore(S.gid, data, modo, { despesas: S.expenses, pagamentos: S.payments });
-      closeSheet(); toast('Backup restaurado: ' + data.despesas.length + ' despesas e ' + data.pagamentos.length + ' pagamentos.');
+      closeSheet(); bkLog('Backup restaurado (' + modo + ')', data.despesas.length + ' despesas · ' + data.pagamentos.length + ' pagamentos', 'sync'); toast('Backup restaurado: ' + data.despesas.length + ' despesas e ' + data.pagamentos.length + ' pagamentos.');
     } catch (e) { t.disabled = false; t.textContent = 'Restaurar agora'; toast(msgErro(e)); }
   },
 };
@@ -3393,6 +3726,26 @@ const FORMS = {
     if (!p.pixTipo) p.pixChave = '';
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
     saveProfilePart(p); toast('Perfil salvo');
+  },
+  async 'chg-email'(f) {
+    const novo = f.email.value.trim().toLowerCase(), senha = f.senha ? f.senha.value : '';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(novo)) return fail(f.email, 'Digite um e-mail válido.');
+    if (novo === (S.user.email || '').toLowerCase()) return fail(f.email, 'Esse já é o seu e-mail.');
+    if (f.senha && !senha) return fail(f.senha, 'Digite a sua senha atual.');
+    busy(f, 'Enviando…');
+    try {
+      await store.changeEmail(senha, novo); closeSheet();
+      if (store === FB) toast('Enviamos um link para ' + novo + '. A troca vale depois de tocar nele.');
+      else { S.user = Object.assign({}, S.user, { email: novo }); S.profile.email = novo; changed(); toast('E-mail trocado'); }
+    } catch (e) { unbusy(f); toast(msgErro(e)); }
+  },
+  async 'chg-pass'(f) {
+    const atual = f.atual ? f.atual.value : '', nova = f.nova.value, nova2 = f.nova2.value;
+    if (f.atual && !atual) return fail(f.atual, 'Digite a senha atual.');
+    if (nova.length < 6) return fail(f.nova, 'A senha nova precisa ter pelo menos 6 caracteres.');
+    if (nova !== nova2) return fail(f.nova2, 'As duas senhas novas não são iguais.');
+    busy(f, 'Salvando…');
+    try { await store.changePassword(atual, nova); closeSheet(); toast('Senha trocada.'); } catch (e) { unbusy(f); toast(msgErro(e)); }
   },
   async 'delete-account'(f) {
     const senha = f.senha ? f.senha.value : '';
