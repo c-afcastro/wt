@@ -1,0 +1,58 @@
+rules_version = '2';
+// Regras de segurança do wirteilen.
+// Cole este conteúdo em: Firebase > Firestore Database > Regras > Publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() { return request.auth != null; }
+    function grupo(gid) { return get(/databases/$(database)/documents/grupos/$(gid)).data; }
+    function grupoDepois(gid) { return getAfter(/databases/$(database)/documents/grupos/$(gid)).data; }
+    function membro(gid) { return logado() && request.auth.uid in grupo(gid).membros; }
+
+    // Perfil privado: só o próprio usuário lê e grava.
+    match /usuarios/{uid} {
+      allow read, write: if logado() && request.auth.uid == uid;
+    }
+
+    // Código de convite -> id do grupo. Qualquer pessoa logada consulta um código específico.
+    match /convites/{codigo} {
+      allow get: if logado();
+      allow create: if logado() && grupoDepois(request.resource.data.gid).dono == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /grupos/{gid} {
+      allow get, list: if logado() && request.auth.uid in resource.data.membros;
+      allow create: if logado()
+        && request.resource.data.dono == request.auth.uid
+        && request.resource.data.membros == [request.auth.uid];
+      allow update: if logado() && (
+        // Membro pode renomear o grupo.
+        (request.auth.uid in resource.data.membros
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome', 'exMembros']))
+        ||
+        // Quem tem o código pode entrar, adicionando só a si mesmo.
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['membros'])
+          && request.resource.data.membros.toSet() == resource.data.membros.toSet().union([request.auth.uid].toSet()))
+      );
+      allow delete: if logado() && resource.data.dono == request.auth.uid;
+
+      // Nome e Pix de cada membro: visível ao grupo, cada um edita o seu.
+      match /membros/{uid} {
+        allow read: if membro(gid);
+        allow write: if logado() && request.auth.uid == uid && request.auth.uid in grupoDepois(gid).membros;
+      }
+      match /despesas/{id} {
+        allow read, delete: if membro(gid);
+        allow create, update: if membro(gid)
+          && request.resource.data.valor is int && request.resource.data.valor > 0
+          && request.resource.data.divisao is map;
+      }
+      match /pagamentos/{id} {
+        allow read, delete: if membro(gid);
+        allow create, update: if membro(gid)
+          && request.resource.data.valor is int && request.resource.data.valor > 0;
+      }
+    }
+  }
+}
