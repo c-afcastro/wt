@@ -920,6 +920,13 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 .pp-d b.pos{color:var(--pos)} .pp-d b.neg{color:var(--neg)}
 @media (max-width:359px){.hero-kpis b{font-size:13px}.hero-kpis span{font-size:11px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ── v0.7: selo verde ── */
+:root{--verif:#2EA55F}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--verif:#4CC38A}}
+:root[data-theme="dark"]{--verif:#4CC38A}
+.hero .selo .b,.gm-hero .selo .b,.cele .selo .b{fill:#fff;stroke:#fff}
+.hero .selo .v,.gm-hero .selo .v{stroke:var(--c,var(--k1))}
 </style>
 </head>
 <body>
@@ -963,7 +970,7 @@ input[type=date]{-webkit-min-logical-width:0;min-inline-size:0}
 const CFG = window.FIREBASE_CONFIG || {};
 const HAS_FB = !!(CFG.apiKey && CFG.projectId);
 const FB_VERSION = '10.12.2';
-const APP_VERSION = '0.6';
+const APP_VERSION = '0.7';
 /* Logo: anel em três partes (três amigos) + ponto central (a conta). */
 const LOGO_SEG = ['M90.79 18.10A40 40 0 0 1 123.95 75.53', 'M121.16 80.37A40 40 0 0 1 54.84 80.37', 'M52.05 75.53A40 40 0 0 1 85.21 18.10'];
 const logoMini = spin => '<svg class="logo-mini' + (spin ? ' spin' : '') + '" viewBox="36 6 104 104" aria-hidden="true"><g>' + LOGO_SEG.map((d, i) => '<path class="q' + (i + 1) + '" d="' + d + '"/>').join('') + '</g><circle cx="88" cy="58" r="10"/></svg>';
@@ -1544,7 +1551,7 @@ const TOURS = {
   ],
   backup: [
     { sel: '#view .hero', t: 'Backups do grupo', x: 'Quantas despesas e pagamentos o grupo tem e quando foi a última cópia automática neste aparelho.' },
-    { sel: '#sec-exportar', t: 'Salvar um backup', x: '<b>.json</b> para restaurar depois; <b>.csv</b> para abrir no Excel. No iPhone, salve em Arquivos ou no Google Drive.' },
+    { sel: '#sec-exportar', t: 'Salvar um backup', x: '<b>.json</b> para restaurar depois; <b>Excel (.xlsx)</b> para ler, com abas, filtros e totais. No iPhone, salve em Arquivos ou no Google Drive.' },
     { sel: '#sec-restaurar', t: 'Ler e restaurar', x: 'Qualquer pessoa lê um backup para conferir. Restaurar é só de quem criou o grupo, porque o backup traz os lançamentos de todos.' },
     { sel: '#sec-copias', t: 'Cópias automáticas', x: 'O app guarda até 8 versões do grupo neste aparelho, sozinho, sempre que os dados mudam.' },
     { sel: '#sec-historico', t: 'Salvos e lidos', x: 'O registro do que foi exportado, lido e restaurado neste aparelho.' },
@@ -1858,6 +1865,201 @@ function waOpen(text) {
 function shareFallback() {
   try { const url = URL.createObjectURL(SHARE.blob); const a = document.createElement('a'); a.href = url; a.download = SHARE.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000); } catch (e) {}
   copyText(SHARE.text, 'Imagem salva e mensagem copiada. No WhatsApp, anexe a imagem e cole a mensagem.');
+}
+
+
+/* ================= Planilha Excel (.xlsx) =================
+   Gerada no próprio aparelho, sem biblioteca: XML do Office + zip sem compressão.
+   Abas: Resumo, Despesas, Partes (uma linha por pessoa em cada despesa, boa para tabela
+   dinâmica), Pagamentos e Acertos. Cabeçalho com filtro, linha congelada, moeda em R$,
+   datas de verdade e totais com fórmula. */
+const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const XL = (() => {
+  const crcT = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = crcT[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  const enc = new TextEncoder();
+  function zip(files) {
+    const parts = [], cen = []; let off = 0;
+    files.forEach(f => {
+      const nm = enc.encode(f.name), d = enc.encode(f.text), crc = crc32(d);
+      const h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 33, true);
+      h.setUint32(14, crc, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true); h.setUint16(26, nm.length, true);
+      parts.push(new Uint8Array(h.buffer), nm, d);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(14, 33, true);
+      c.setUint32(16, crc, true); c.setUint32(20, d.length, true); c.setUint32(24, d.length, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+      cen.push(new Uint8Array(c.buffer), nm);
+      off += 30 + nm.length + d.length;
+    });
+    const size = cen.reduce((a, x) => a + x.length, 0), e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, size, true); e.setUint32(16, off, true);
+    return new Blob(parts.concat(cen, [new Uint8Array(e.buffer)]), { type: XLSX_MIME });
+  }
+  const x = v => String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const col = n => { let s = ''; n++; while (n) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+  const serial = iso => { const [y, m, d] = String(iso).slice(0, 10).split('-').map(Number); return (Date.UTC(y, m - 1, d) - Date.UTC(1899, 11, 30)) / 864e5; };
+  const serialDT = iso => { const t = new Date(iso); if (isNaN(t)) return null; return (Date.UTC(t.getFullYear(), t.getMonth(), t.getDate(), t.getHours(), t.getMinutes()) - Date.UTC(1899, 11, 30)) / 864e5; };
+  /* estilos: 0 padrão · 1 título · 2 cabeçalho · 3 texto · 4 moeda · 5 data · 6 data e hora · 7 total (rótulo)
+     8 total (moeda) · 9 nota · 10 saldo (verde/vermelho) · 11 rótulo em negrito · 12 inteiro · 13 seção · 14 total saldo */
+  const STYLES = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    '<numFmts count="4"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/><numFmt numFmtId="165" formatCode="dd/mm/yyyy hh:mm"/>' +
+    '<numFmt numFmtId="166" formatCode="&quot;R$&quot; #,##0.00;[Red]-&quot;R$&quot; #,##0.00;&quot;R$&quot; 0.00"/>' +
+    '<numFmt numFmtId="167" formatCode="[Color10]&quot;R$&quot; #,##0.00;[Red]-&quot;R$&quot; #,##0.00;&quot;R$&quot; 0.00"/></numFmts>' +
+    '<fonts count="6"><font><sz val="11"/><color rgb="FF1D1D1F"/><name val="Calibri"/><family val="2"/></font>' +
+    '<font><b/><sz val="16"/><color rgb="FF1A3A5C"/><name val="Calibri"/><family val="2"/></font>' +
+    '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/><family val="2"/></font>' +
+    '<font><b/><sz val="11"/><color rgb="FF1D1D1F"/><name val="Calibri"/><family val="2"/></font>' +
+    '<font><i/><sz val="10"/><color rgb="FF6E6E73"/><name val="Calibri"/><family val="2"/></font>' +
+    '<font><b/><sz val="12"/><color rgb="FF2E8B57"/><name val="Calibri"/><family val="2"/></font></fonts>' +
+    '<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>' +
+    '<fill><patternFill patternType="solid"><fgColor rgb="FF1A3A5C"/><bgColor indexed="64"/></patternFill></fill>' +
+    '<fill><patternFill patternType="solid"><fgColor rgb="FFEEF3EF"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+    '<borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border>' +
+    '<border><left/><right/><top/><bottom style="thin"><color rgb="FFDDDDDD"/></bottom><diagonal/></border>' +
+    '<border><left/><right/><top style="medium"><color rgb="FF2E8B57"/></top><bottom style="thin"><color rgb="FFDDDDDD"/></bottom><diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="15">' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+    '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="0" fontId="2" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>' +
+    '<xf numFmtId="166" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>' +
+    '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left"/></xf>' +
+    '<xf numFmtId="165" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left"/></xf>' +
+    '<xf numFmtId="0" fontId="3" fillId="3" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' +
+    '<xf numFmtId="166" fontId="3" fillId="3" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>' +
+    '<xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="167" fontId="3" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>' +
+    '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="1" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left"/></xf>' +
+    '<xf numFmtId="0" fontId="5" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="167" fontId="3" fillId="3" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>' +
+    '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  function cellXml(r, c, cell) {
+    if (cell == null || cell === '') return '';
+    const ref = col(c) + (r + 1);
+    if (typeof cell !== 'object') cell = { v: cell };
+    const st = cell.s != null ? ' s="' + cell.s + '"' : '';
+    if (cell.f) return '<c r="' + ref + '"' + st + '><f>' + x(cell.f) + '</f></c>';
+    let v = cell.v;
+    if (cell.d) v = serial(cell.d);
+    if (cell.dt) { v = serialDT(cell.dt); if (v == null) return st ? '<c r="' + ref + '"' + st + '/>' : ''; }
+    if (typeof v === 'number' && isFinite(v)) return '<c r="' + ref + '"' + st + '><v>' + v + '</v></c>';
+    if (v == null || v === '') return st ? '<c r="' + ref + '"' + st + '/>' : '';
+    return '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + x(v) + '</t></is></c>';
+  }
+  function sheetXml(sh) {
+    let h = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+    h += '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>';
+    h += '<sheetViews><sheetView workbookViewId="0" showGridLines="0"' + (sh.first ? ' tabSelected="1"' : '') + '>' +
+      (sh.freeze ? '<pane ySplit="' + sh.freeze + '" topLeftCell="A' + (sh.freeze + 1) + '" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A' + (sh.freeze + 1) + '" sqref="A' + (sh.freeze + 1) + '"/>' : '') + '</sheetView></sheetViews>';
+    h += '<sheetFormatPr defaultRowHeight="16"/>';
+    if (sh.cols) h += '<cols>' + sh.cols.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>';
+    h += '<sheetData>' + sh.rows.map((row, r) => {
+      const cells = (row && row.c) || row || [];
+      return '<row r="' + (r + 1) + '"' + (row && row.h ? ' ht="' + row.h + '" customHeight="1"' : '') + '>' + cells.map((cell, c) => cellXml(r, c, cell)).join('') + '</row>';
+    }).join('') + '</sheetData>';
+    if (sh.filter) h += '<autoFilter ref="' + sh.filter + '"/>';
+    if (sh.merges && sh.merges.length) h += '<mergeCells count="' + sh.merges.length + '">' + sh.merges.map(m => '<mergeCell ref="' + m + '"/>').join('') + '</mergeCells>';
+    h += '<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>';
+    return h;
+  }
+  function book(sheets, meta) {
+    sheets[0].first = true;
+    const names = sheets.map(s => s.name.replace(/[\\\/\?\*\[\]:]/g, ' ').slice(0, 31));
+    const files = [];
+    files.push({ name: '[Content_Types].xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+      sheets.map((_, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') +
+      '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>' });
+    files.push({ name: '_rels/.rels', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>' });
+    const now = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+    files.push({ name: 'docProps/core.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>' + x(meta.title) + '</dc:title><dc:creator>wirteilen</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">' + now + '</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">' + now + '</dcterms:modified></cp:coreProperties>' });
+    files.push({ name: 'docProps/app.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>wirteilen</Application></Properties>' });
+    const dn = sheets.map((sh, i) => sh.filter ? '<definedName name="_xlnm._FilterDatabase" localSheetId="' + i + '" hidden="1">\'' + x(names[i]) + '\'!' + sh.filter.split(':').map(p => p.replace(/([A-Z]+)(\d+)/, '$$$1$$$2')).join(':') + '</definedName>' : '').join('');
+    files.push({ name: 'xl/workbook.xml', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets>' +
+      names.map((n, i) => '<sheet name="' + x(n) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets>' + (dn ? '<definedNames>' + dn + '</definedNames>' : '') + '<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>' });
+    files.push({ name: 'xl/_rels/workbook.xml.rels', text: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      sheets.map((_, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') +
+      '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' });
+    files.push({ name: 'xl/styles.xml', text: STYLES });
+    sheets.forEach((sh, i) => files.push({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml', text: sheetXml(sh) }));
+    return zip(files);
+  }
+  return { book, col };
+})();
+function historyXLSX() {
+  const g = group(), b = balances(), st = settle(b), C = XL.col;
+  const ids = Array.from(new Set(memberIds().concat(...S.expenses.map(e => [e.pagador].concat(Object.keys(e.divisao || {})))).concat(...S.payments.map(p => [p.de, p.para]))));
+  const nm = u => nameOf(u) || 'Ex-membro';
+  const R = c => c / 100;
+  const exps = S.expenses.slice().sort((a, z) => a.data.localeCompare(z.data) || String(a.criadoEm || '').localeCompare(String(z.criadoEm || '')));
+  const pays = S.payments.slice().sort((a, z) => a.data.localeCompare(z.data));
+  const modo = m => ({ igual: 'Igual', valores: 'Por valores', partes: 'Por partes' })[m] || 'Igual';
+  const head = (arr) => ({ h: 30, c: arr.map(v => ({ v, s: 2 })) });
+  const title = (t, sub, w) => [{ h: 26, c: [{ v: t, s: 1 }] }, { c: [{ v: sub, s: 9 }] }, { h: 6, c: [] }];
+
+  // Despesas
+  const pcols = ids.map(u => 'Parte · ' + nm(u));
+  const dHead = ['Data', 'Descrição', 'Categoria', 'Pago por', 'Valor', 'Divisão', 'Parcela', 'Lançado por', 'Lançado em'].concat(pcols);
+  const dRows = title('Despesas · ' + g.nome, 'Valores em reais. As colunas "Parte" mostram quanto cada pessoa consumiu em cada despesa. Use os filtros do cabeçalho.');
+  const d0 = dRows.length; dRows.push(head(dHead));
+  exps.forEach(e => dRows.push([{ d: e.data, s: 5 }, { v: e.descricao, s: 3 }, { v: catName(e.categoria), s: 3 }, { v: nm(e.pagador), s: 3 }, { v: R(e.valor), s: 4 }, { v: modo(e.modo), s: 3 },
+    { v: e.serie ? e.serie.k + ' de ' + e.serie.n + (e.serie.freq === 'semanal' ? ' (semanal)' : ' (mensal)') : '', s: 3 }, { v: nm(e.criadoPor || e.pagador), s: 3 }, { dt: e.criadoEm || '', s: 6 }]
+    .concat(ids.map(u => ({ v: R((e.divisao || {})[u] || 0), s: 4 })))));
+  const dFirst = d0 + 2, dLast = d0 + 1 + exps.length;
+  dRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: exps.length + ' ' + plural(exps.length, 'despesa', 'despesas'), s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, exps.length ? { f: 'SUBTOTAL(9,E' + dFirst + ':E' + dLast + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }]
+    .concat(ids.map((_, k) => exps.length ? { f: 'SUBTOTAL(9,' + C(9 + k) + dFirst + ':' + C(9 + k) + dLast + ')', s: 8 } : { v: 0, s: 8 })) });
+  const shDesp = { name: 'Despesas', rows: dRows, freeze: d0 + 1, filter: 'A' + (d0 + 1) + ':' + C(dHead.length - 1) + Math.max(d0 + 1, dLast), cols: [12, 34, 18, 20, 14, 13, 16, 20, 17].concat(ids.map(() => 16)), merges: ['A1:' + C(Math.max(5, dHead.length - 1)) + '1', 'A2:' + C(Math.max(5, dHead.length - 1)) + '2'] };
+
+  // Partes (uma linha por pessoa)
+  const pRows = title('Partes · ' + g.nome, 'Uma linha por pessoa em cada despesa. Ideal para tabela dinâmica: Pessoa nas linhas, Mês nas colunas, Parte nos valores.');
+  const p0 = pRows.length; pRows.push(head(['Data', 'Mês', 'Descrição', 'Categoria', 'Pago por', 'Pessoa', 'Parte', 'Valor da despesa']));
+  let np = 0;
+  exps.forEach(e => Object.entries(e.divisao || {}).filter(([, v]) => v > 0).forEach(([u, v]) => { np++;
+    pRows.push([{ d: e.data, s: 5 }, { v: e.data.slice(0, 7), s: 3 }, { v: e.descricao, s: 3 }, { v: catName(e.categoria), s: 3 }, { v: nm(e.pagador), s: 3 }, { v: nm(u), s: 3 }, { v: R(v), s: 4 }, { v: R(e.valor), s: 4 }]); }));
+  pRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }, np ? { f: 'SUBTOTAL(9,G' + (p0 + 2) + ':G' + (p0 + 1 + np) + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }] });
+  const shPartes = { name: 'Partes', rows: pRows, freeze: p0 + 1, filter: 'A' + (p0 + 1) + ':H' + Math.max(p0 + 1, p0 + 1 + np), cols: [12, 10, 34, 18, 20, 20, 14, 16], merges: ['A1:H1', 'A2:H2'] };
+
+  // Pagamentos
+  const gRows = title('Pagamentos · ' + g.nome, 'Acertos já registrados entre as pessoas. Eles baixam o saldo de quem pagou e de quem recebeu.');
+  const g0 = gRows.length; gRows.push(head(['Data', 'Quem pagou', 'Para quem', 'Valor', 'Observação', 'Registrado por', 'Registrado em']));
+  pays.forEach(p => gRows.push([{ d: p.data, s: 5 }, { v: nm(p.de), s: 3 }, { v: nm(p.para), s: 3 }, { v: R(p.valor), s: 4 }, { v: p.obs || '', s: 3 }, { v: nm(p.criadoPor || p.de), s: 3 }, { dt: p.criadoEm || '', s: 6 }]));
+  gRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: pays.length + ' ' + plural(pays.length, 'pagamento', 'pagamentos'), s: 7 }, { v: '', s: 7 }, pays.length ? { f: 'SUBTOTAL(9,D' + (g0 + 2) + ':D' + (g0 + 1 + pays.length) + ')', s: 8 } : { v: 0, s: 8 }, { v: '', s: 7 }, { v: '', s: 7 }, { v: '', s: 7 }] });
+  const shPag = { name: 'Pagamentos', rows: gRows, freeze: g0 + 1, filter: 'A' + (g0 + 1) + ':G' + Math.max(g0 + 1, g0 + 1 + pays.length), cols: [12, 20, 20, 14, 24, 20, 17], merges: ['A1:G1', 'A2:G2'] };
+
+  // Resumo
+  const total = sum(exps, 'valor');
+  const rRows = [{ h: 28, c: [{ v: 'wirteilen · histórico do grupo', s: 1 }] }, { c: [{ v: 'Gerado pelo app. Valores em reais (R$).', s: 9 }] }, { h: 8, c: [] },
+    [{ v: 'Grupo', s: 11 }, { v: g.nome, s: 3 }], [{ v: 'Código de convite', s: 11 }, { v: g.codigo, s: 3 }], [{ v: 'Criado por', s: 11 }, { v: nm(g.dono), s: 3 }],
+    [{ v: 'Exportado em', s: 11 }, { dt: new Date().toISOString(), s: 6 }], [{ v: 'Total gasto', s: 11 }, { v: R(total), s: 4 }],
+    [{ v: 'Despesas', s: 11 }, { v: exps.length, s: 12 }], [{ v: 'Pagamentos', s: 11 }, { v: pays.length, s: 12 }], [{ v: 'Versão do app', s: 11 }, { v: APP_VERSION, s: 3 }],
+    { h: 10, c: [] }, { h: 20, c: [{ v: 'Pessoas', s: 13 }] }];
+  const h0 = rRows.length; rRows.push(head(['Pessoa', 'Situação', 'Pagou', 'Consumiu', 'Pagamentos feitos', 'Pagamentos recebidos', 'Saldo final']));
+  ids.forEach(u => {
+    const pg = sum(exps.filter(e => e.pagador === u), 'valor'), cs = sum(exps, e => (e.divisao || {})[u] || 0);
+    const fe = sum(pays.filter(p => p.de === u), 'valor'), re = sum(pays.filter(p => p.para === u), 'valor'), r = rRows.length + 1;
+    rRows.push([{ v: nm(u), s: 3 }, { v: memberIds().includes(u) ? (u === g.dono ? 'Criou o grupo' : 'Membro') : 'Ex-membro', s: 3 }, { v: R(pg), s: 4 }, { v: R(cs), s: 4 }, { v: R(fe), s: 4 }, { v: R(re), s: 4 }, { f: 'C' + r + '-D' + r + '+E' + r + '-F' + r, s: 10 }]);
+  });
+  const hf = h0 + 2, hl = h0 + 1 + ids.length;
+  rRows.push({ h: 22, c: [{ v: 'Total', s: 7 }, { v: '', s: 7 }].concat(['C', 'D', 'E', 'F'].map(L => ({ f: 'SUM(' + L + hf + ':' + L + hl + ')', s: 8 }))).concat([{ f: 'SUM(G' + hf + ':G' + hl + ')', s: 14 }]) });
+  rRows.push({ c: [{ v: 'Saldo final positivo: a pessoa tem a receber. Negativo: tem a pagar. A soma dos saldos é sempre zero.', s: 9 }] });
+  rRows.push({ h: 10, c: [] }, { h: 20, c: [{ v: 'Acertos pendentes', s: 13 }] });
+  rRows.push(head(['Quem paga', 'Para quem', 'Valor']));
+  if (st.length) st.forEach(a => rRows.push([{ v: nm(a.de), s: 3 }, { v: nm(a.para), s: 3 }, { v: R(a.valor), s: 4 }]));
+  else rRows.push([{ v: 'Nenhum: o grupo está acertado.', s: 3 }, { v: '', s: 3 }, { v: '', s: 3 }]);
+  const shRes = { name: 'Resumo', rows: rRows, cols: [26, 18, 15, 15, 18, 20, 16], merges: ['A1:G1', 'A2:G2'] };
+
+  return XL.book([shRes, shDesp, shPartes, shPag], { title: 'wirteilen · ' + g.nome });
+}
+async function exportXLSX() {
+  const g = group(), name = 'wirteilen-' + slug(g.nome) + '-' + fileStamp() + '.xlsx';
+  const blob = historyXLSX();
+  try {
+    const coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches, file = new File([blob], name, { type: XLSX_MIME });
+    if (coarse && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: name }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000); toast('Planilha gerada.');
 }
 
 /* ================= Face ID ================= */
@@ -2304,9 +2506,9 @@ const VIEWS = {
       '<span class="hero-s">' + (snaps.length ? 'Última cópia automática: ' + fmtDateTime(snaps[0].em) : 'Ainda sem cópia automática neste aparelho') + '</span></div>' +
       '<div class="hero-kpis"><div><span>Despesas</span><b>' + S.expenses.length + '</b></div><div><span>Pagamentos</span><b>' + S.payments.length + '</b></div><div><span>Cópias aqui</span><b>' + snaps.length + '</b></div></div></section>';
     h += '<section class="block" id="sec-exportar"><h2 class="h">Salvar um backup</h2>' +
-      '<p class="hint" style="margin:-4px 0 14px">Cópia completa do grupo: despesas, divisões e pagamentos. No iPhone, escolha Salvar em Arquivos ou o app do Google Drive.</p>' +
+      '<p class="hint" style="margin:-4px 0 14px">O <b>.json</b> é a cópia completa para restaurar. O <b>Excel</b> é para ler: abas de Resumo, Despesas, Partes e Pagamentos, com filtros e totais. No iPhone, salve em Arquivos ou no Google Drive.</p>' +
       '<div class="btns"><button class="btn" data-a="bk-json">' + ico('share') + 'Exportar backup (.json)</button>' +
-      '<div class="row2"><button class="btn ghost" data-a="hist-csv">' + ico('table') + 'Planilha (.csv)</button><button class="btn ghost" data-a="bk-copy">' + ico('copy') + 'Copiar backup</button></div></div></section>';
+      '<div class="row2"><button class="btn ghost" data-a="hist-csv">' + ico('table') + 'Excel (.xlsx)</button><button class="btn ghost" data-a="bk-copy">' + ico('copy') + 'Copiar backup</button></div></div></section>';
     h += '<section class="block" id="sec-restaurar"><h2 class="h">Ler e restaurar</h2>' +
       '<p class="hint" style="margin:-4px 0 14px">' + (dono ? 'O app mostra um resumo antes de mudar qualquer dado.' : 'Qualquer pessoa pode ler um backup para conferir. Restaurar é só de quem criou o grupo (' + esc(nameOf(g.dono)) + ').') + '</p>' +
       '<div class="btns"><label class="btn ghost file">' + ico('import') + 'Escolher arquivo .json<input type="file" id="bk-file" accept=".json,application/json,text/plain" data-ch="bk-file"></label>' +
@@ -2461,7 +2663,7 @@ const GUIAS = [
   {
     id: 'grupo', ic: 'person2',
     titulo: 'Gerenciar o grupo',
-    sub: 'Nome, pessoas, categorias, convite por e-mail e exclusão com o histórico em .csv.',
+    sub: 'Nome, pessoas, categorias, convite e exclusão com o histórico em Excel.',
     etapas: [
       { ic: 'person2', rot: 'Abrir', tt: 'Engrenagem do topo — abrir o grupo',
         res: 'Quem criou o grupo gerencia pessoas, nome e categorias. Todos podem convidar e ver as pessoas.',
@@ -2494,10 +2696,10 @@ const GUIAS = [
         res: 'Excluir apaga o grupo para todos. Antes, o app oferece o histórico completo em planilha.',
         passos: [
           'Toque em ' + _gvBt('Excluir grupo', 'trash', 'danger') + '.',
-          'Toque em ' + _gvBt('Baixar histórico completo (.csv)', 'table', 'primary') + ' e salve em Arquivos ou no Drive. Abre no Excel.',
+          'Toque em ' + _gvBt('Baixar histórico completo (Excel)', 'table', 'primary') + ' e salve em Arquivos ou no Drive.',
           'Toque em ' + _gvBt('Excluir o grupo para todos', 'trash', 'danger') + ' e de novo para confirmar.',
         ],
-        nota: 'O .csv traz cada despesa com a parte de cada pessoa, os pagamentos, o saldo final de cada um e os acertos que ficaram pendentes. Não dá para desfazer a exclusão.', warn: true },
+        nota: 'O Excel traz as abas Resumo (saldo final de cada um e acertos pendentes), Despesas (com a parte de cada pessoa), Partes e Pagamentos. Não dá para desfazer a exclusão.', warn: true },
     ],
   },
   {
@@ -2535,7 +2737,7 @@ const GUIAS = [
           'Abra a aba ' + _gvAba('backup') + '.',
           'Toque em ' + _gvBt('Exportar backup (.json)', 'share', 'primary') + '.',
           'Na folha do iPhone, escolha <b>Salvar em Arquivos</b> ou o app do <b>Google Drive</b>.',
-          'Para analisar no Excel, use ' + _gvBt('Planilha (.csv)', 'table') + '.',
+          'Para analisar no Excel, use ' + _gvBt('Excel (.xlsx)', 'table') + '.',
         ],
         nota: 'Sem lugar para salvar? ' + _gvBt('Copiar backup', 'copy') + ' copia o conteúdo para colar num e-mail ou nota.' },
       { ic: 'import', rot: 'Abrir', tt: 'Abrir o backup para restaurar',
@@ -2639,6 +2841,10 @@ const MAN_SECOES = [
     faz: 'Abre o app de e-mail com a mensagem pronta: link, código do grupo e como instalar no iPhone.',
     uso: 'Na engrenagem do topo: <b>Enviar convite (imagem)</b>, <b>Convidar por e-mail</b> ou <b>Enviar o wirteilen para um amigo</b>.',
     det: 'O e-mail sai da sua conta, pelo app de e-mail do iPhone. Sem app de e-mail configurado, use Copiar ou Outros apps.' },
+  { id: 'excel', ic: 'table', t: 'Planilha Excel', s: 'Histórico do grupo em abas.',
+    faz: 'Gera um arquivo .xlsx com as abas Resumo, Despesas, Partes e Pagamentos, com cabeçalho, filtros, datas, moeda em R$ e totais.',
+    uso: 'Na aba Backup, toque em <b>Excel (.xlsx)</b>. No iPhone, salve em Arquivos ou abra no Excel.',
+    det: 'A aba Partes tem uma linha por pessoa em cada despesa: é a melhor para montar tabela dinâmica por pessoa, mês ou categoria.' },
   { id: 'imagem', ic: 'chat', t: 'Enviar como imagem', s: 'Despesa, convite e Pix no WhatsApp.',
     faz: 'Monta uma imagem com o visual do app: a despesa com a divisão, o convite com o código ou a cobrança Pix com o QR Code.',
     uso: 'Toque em <b>Enviar no WhatsApp</b> e escolha WhatsApp na lista de apps do iPhone. A mensagem em texto vai junto.',
@@ -2658,7 +2864,7 @@ const MAN_SECOES = [
   { id: 'versao', ic: 'info', t: 'Versão', s: 'wirteilen v' + APP_VERSION + '.',
     faz: 'A versão aparece na tela de entrada e no fim de Ajustes.',
     uso: 'Ao relatar um problema, diga a versão.',
-    det: 'A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
+    det: 'A 0.7 deixa o selo de em dia verde e troca a planilha .csv por um Excel formatado. A 0.6 leva o grupo para a engrenagem do topo, cria a aba Backup, deixa Ajustes só com a sua conta e manda despesas, convites e Pix como imagem. A 0.5 traz a tela de entrada nova, com o logo animado. A 0.4 permite enquadrar a foto de perfil com zoom e arrastando. A 0.3 deixa só quem lançou editar ou excluir, permite excluir a própria conta e deixa mais claro como remover alguém do grupo. A 0.2 organiza categorias, ícones e cores em grade, sem nada rolar para o lado, e faz o iPhone pegar as atualizações na hora. A 0.1 trouxe cores por aba, foto de perfil, Face ID, parcelas, categorias do grupo, convites por e-mail, exclusão do grupo com histórico e o tour guiado.' },
   { id: 'divisao', ic: 'person2', t: 'Modos de divisão', s: 'Igual, Valores e Partes.',
     faz: 'Define quanto da despesa cabe a cada pessoa.',
     uso: '<b>Igual</b> divide entre os marcados. <b>Valores</b> recebe o valor exato de cada um. <b>Partes</b> divide por peso (2 partes pagam o dobro de 1).',
@@ -3263,15 +3469,15 @@ function openGroupManage() {
     (dono ? '<h3 class="h3">Nome do grupo</h3><form data-f="rename" class="inline-form" style="margin-bottom:6px"><label class="fld"><span class="sr">Nome do grupo</span><input id="gr-nome" name="nome" required maxlength="40" value="' + esc(g.nome) + '" aria-label="Nome do grupo"></label><button class="btn ghost">Salvar</button></form>' : '') +
     '<h3 class="h3">Categorias do grupo</h3><div id="gm-cats">' + gmCatsHtml() + '</div>' +
     '<h3 class="h3">Indicar o app</h3><button class="btn ghost" data-a="share-app">' + ico('iphone') + 'Enviar o wirteilen para um amigo</button>' +
-    '<div class="danger-zone">' + (dono ? '<button class="btn danger" data-a="gm-del-open">' + ico('trash') + 'Excluir grupo</button><p class="hint">Antes de apagar, o app oferece o histórico completo em .csv.</p>'
+    '<div class="danger-zone">' + (dono ? '<button class="btn danger" data-a="gm-del-open">' + ico('trash') + 'Excluir grupo</button><p class="hint">Antes de apagar, o app oferece o histórico completo em Excel.</p>'
       : '<button class="btn danger" data-a="gm-leave">' + ico('door') + 'Sair do grupo</button>') + '</div>', 'Grupo', 'k5');
 }
 function openDeleteGroup() {
   const g = group();
   openSheet(sheetHead('Excluir grupo') +
     '<p class="lead">Excluir <b>' + esc(g.nome) + '</b> apaga para todos ' + S.expenses.length + ' ' + plural(S.expenses.length, 'despesa', 'despesas') + ', ' + S.payments.length + ' ' + plural(S.payments.length, 'pagamento', 'pagamentos') + ' e o código de convite. Não dá para desfazer.</p>' +
-    note('Antes, baixe o <b>histórico completo</b>: cada despesa com a parte de cada pessoa, os pagamentos, o saldo final de cada um e os acertos que ficaram pendentes. Abre no Excel.') +
-    '<div class="sheet-actions"><button class="btn" data-a="hist-csv">' + ico('table') + 'Baixar histórico completo (.csv)</button>' +
+    note('Antes, baixe o <b>histórico completo em Excel</b>: abas de Resumo (saldo final de cada um e acertos pendentes), Despesas (com a parte de cada pessoa), Partes e Pagamentos.') +
+    '<div class="sheet-actions"><button class="btn" data-a="hist-csv">' + ico('table') + 'Baixar histórico completo (Excel)</button>' +
     '<button class="btn ghost" data-a="bk-json">' + ico('share') + 'Baixar também o backup (.json)</button>' +
     '<button class="btn danger solid" data-a="gm-delete" style="margin-top:10px">' + ico('trash') + 'Excluir o grupo para todos</button></div>', 'Excluir grupo', 'k5');
 }
@@ -3328,7 +3534,7 @@ function openDeleteAccount() {
   openSheet(sheetHead('Excluir minha conta') +
     '<p class="lead">Apaga o seu login, o seu perfil, a sua chave Pix e a sua foto. Não dá para desfazer.</p>' +
     (itens ? '<h3 class="h3" style="margin-top:0">O que acontece com os seus grupos</h3><ul class="acc-list">' + itens + '</ul>' : '') +
-    (S.gid ? note('Antes, se quiser, baixe o histórico do grupo aberto: ' + '<button type="button" class="link" data-a="hist-csv" style="display:inline;padding:0">planilha .csv</button>.') : '') +
+    (S.gid ? note('Antes, se quiser, baixe o histórico do grupo aberto: ' + '<button type="button" class="link" data-a="hist-csv" style="display:inline;padding:0">planilha Excel</button>.') : '') +
     '<form data-f="delete-account" novalidate>' +
     (store === FB ? '<label class="fld"><span>Sua senha, para confirmar</span><input id="da-senha" name="senha" type="password" autocomplete="current-password" required></label>' : '') +
     '<label class="chk-row"><input type="checkbox" id="da-ok" name="ok"><span>Entendo que a conta será excluída para sempre e que os acertos pendentes devem ser feitos antes.</span></label>' +
@@ -3545,7 +3751,7 @@ const ACTIONS = {
   },
   'gm-cat-del'(t) { const g = group(); if (g.dono !== me()) return; g.categorias = (g.categorias || []).filter(c => c.id !== t.dataset.id); store.saveCategories(S.gid, g.categorias); gmCatsPaint(); toast('Categoria excluída. As despesas dela passam a aparecer em Outros.'); },
   'gm-del-open'() { openDeleteGroup(); },
-  'hist-csv'() { bkLog('Histórico exportado (.csv)', S.expenses.length + ' despesas', 'table'); exportFile('wirteilen-historico-' + slug(group().nome) + '-' + fileStamp() + '.csv', historyCSV(), 'text/csv'); },
+  'hist-csv'() { bkLog('Planilha Excel exportada (.xlsx)', S.expenses.length + ' despesas', 'table'); exportXLSX(); },
   async 'gm-delete'(t) {
     if (!arm(t, 'Toque de novo: apagar para todos')) return;
     const g = group(), gid = S.gid, info = { codigo: g.codigo, despesas: S.expenses.slice(), pagamentos: S.payments.slice(), membros: Object.keys(S.members).concat(memberIds()).filter((u, i, a) => a.indexOf(u) === i) };
