@@ -1,6 +1,6 @@
 // wirteilen — cache para funcionar sem internet.
-// Ao publicar uma versão nova do app, troque a versão abaixo (v1.8 -> v1.9) para os celulares atualizarem.
-const CACHE = 'wirteilen-v1.8';
+// Ao publicar uma versão nova do app, troque a versão abaixo (v1.9 -> v2.0) para os celulares atualizarem.
+const CACHE = 'wirteilen-v1.9';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 const CDN = ['www.gstatic.com', 'fonts.googleapis.com', 'fonts.gstatic.com', 'cdn.jsdelivr.net'];
